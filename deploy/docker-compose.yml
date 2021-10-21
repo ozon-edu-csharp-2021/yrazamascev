@@ -24,7 +24,7 @@ services:
         depends_on:
           - supply-service
     merchandise-service:
-        build: '.'
+        build: '..'
         hostname: merchandise_service
         ports:
           - "8083:80"
