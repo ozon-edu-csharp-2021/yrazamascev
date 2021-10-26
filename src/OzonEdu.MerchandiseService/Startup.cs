@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
+using OzonEdu.MerchandiseService.Infrastructure.Interceptors;
+
 namespace OzonEdu.MerchandiseService
 {
     public class Startup
@@ -10,7 +12,7 @@ namespace OzonEdu.MerchandiseService
         {
             //services.AddSingleton<IStockService, StockService>();
 
-            //services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
+            services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

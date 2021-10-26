@@ -16,7 +16,8 @@ namespace OzonEdu.MerchandiseService
         {
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
-                .AddInfrastructure();
+                .AddInfrastructure()
+                .AddHttp();
         }
     }
 }
