@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>OzonEdu.MerchApi.Client</RootNamespace>
+    <AssemblyName>OzonEdu.MerchApi.Client</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OzonEdu.MerchApi\OzonEdu.MerchApi.csproj" />
+  </ItemGroup>
+
+</Project>

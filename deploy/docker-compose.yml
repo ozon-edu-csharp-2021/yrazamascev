@@ -25,7 +25,7 @@ services:
           - supply-service
     merchandise-service:
         build: '..'
-        hostname: merchandise_service
+        hostname: merch_api
         ports:
           - "8033:80"
         depends_on:
