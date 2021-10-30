@@ -38,7 +38,7 @@ namespace OzonEdu.MerchApi.Infrastructure.Middlewares
                 _logBuilder.AppendLine(header);
                 foreach (KeyValuePair<string, StringValues> httpHeader in httpHeaders)
                 {
-                    _logBuilder.AppendLine($"\t{httpHeader.Key,HEADER_PADDING}{httpHeader.Value}");
+                    AddHttpInformation(httpHeader.Key, httpHeader.Value);
                 }
             }
         }
