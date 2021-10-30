@@ -23,6 +23,7 @@ namespace OzonEdu.MerchApi.Controllers
         public async Task<ActionResult<CheckWasIssuedMerchResponse>> CheckWasIssuedMerch(CheckWasIssuedMerchRequest request, CancellationToken token)
         {
             bool response = await _service.CheckWasIssuedMerch(request.EmployeeId, token);
+
             return Ok(new CheckWasIssuedMerchResponse
             {
                 EmployeeId = request.EmployeeId,
@@ -34,6 +35,7 @@ namespace OzonEdu.MerchApi.Controllers
         public async Task<ActionResult<IssueMerchResponse>> IssueMerch(IssueMerchRequest request, CancellationToken token)
         {
             bool response = await _service.IssueMerch(request.EmployeeId, token);
+
             return Ok(new IssueMerchResponse()
             {
                 EmployeeId = request.EmployeeId

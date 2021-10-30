@@ -1,6 +1,6 @@
 ﻿namespace OzonEdu.MerchApi.DTO
 {
-    public class CheckWasIssuedMerchRequest
+    public sealed class CheckWasIssuedMerchRequest
     {
         public long EmployeeId { get; set; }
     }
