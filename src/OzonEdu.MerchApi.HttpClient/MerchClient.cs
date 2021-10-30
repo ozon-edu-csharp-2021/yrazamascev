@@ -21,6 +21,7 @@ namespace OzonEdu.MerchApi.Client
             CheckWasIssuedMerchRequest request, CancellationToken token)
         {
             using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/merch/check-was-issued-merch", request, token);
+
             return await response.Content.ReadFromJsonAsync<CheckWasIssuedMerchResponse>(cancellationToken: token);
         }
 
@@ -28,6 +29,7 @@ namespace OzonEdu.MerchApi.Client
                     IssueMerchRequest request, CancellationToken token)
         {
             using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/merch/issue-merch", request, token);
+
             return await response.Content.ReadFromJsonAsync<IssueMerchResponse>(cancellationToken: token);
         }
     }

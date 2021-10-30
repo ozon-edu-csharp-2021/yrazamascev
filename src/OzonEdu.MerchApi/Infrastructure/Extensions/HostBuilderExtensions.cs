@@ -24,6 +24,7 @@ namespace OzonEdu.MerchApi.Infrastructure.Extensions
 
                 services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>());
             });
+
             return builder;
         }
     }
