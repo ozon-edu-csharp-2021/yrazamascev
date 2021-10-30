@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace OzonEdu.MerchandiseService
+using OzonEdu.MerchApi.Infrastructure.Extensions;
+
+namespace OzonEdu.MerchApi
 {
     public class Program
     {
@@ -13,10 +15,8 @@ namespace OzonEdu.MerchandiseService
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
+                .AddInfrastructure();
         }
     }
 }

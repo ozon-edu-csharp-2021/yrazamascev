@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "merchandise_service": {
+    "merch_api": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
