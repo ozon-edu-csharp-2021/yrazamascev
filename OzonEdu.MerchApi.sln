@@ -24,7 +24,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{19AD18
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Client", "src\OzonEdu.MerchApi.HttpClient\OzonEdu.MerchApi.Client.csproj", "{EBE75687-4B53-49A5-9F5D-6CD1EC210E5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchApi.Grpc", "src\OzonEdu.MerchApi.Grpc\OzonEdu.MerchApi.Grpc.csproj", "{094BAE47-7EB4-47D5-B58D-C0333F0BAB11}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Grpc", "src\OzonEdu.MerchApi.Grpc\OzonEdu.MerchApi.Grpc.csproj", "{094BAE47-7EB4-47D5-B58D-C0333F0BAB11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchApi.Infrastructure", "src\OzonEdu.MerchApi.Infrastructure\OzonEdu.MerchApi.Infrastructure.csproj", "{72D48DA1-19FD-49A4-B905-F3FB80A796B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +46,10 @@ Global
 		{094BAE47-7EB4-47D5-B58D-C0333F0BAB11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{094BAE47-7EB4-47D5-B58D-C0333F0BAB11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{094BAE47-7EB4-47D5-B58D-C0333F0BAB11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72D48DA1-19FD-49A4-B905-F3FB80A796B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72D48DA1-19FD-49A4-B905-F3FB80A796B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72D48DA1-19FD-49A4-B905-F3FB80A796B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72D48DA1-19FD-49A4-B905-F3FB80A796B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +58,7 @@ Global
 		{60A9791E-941A-46B0-8D5E-4550D3454F5D} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 		{EBE75687-4B53-49A5-9F5D-6CD1EC210E5B} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 		{094BAE47-7EB4-47D5-B58D-C0333F0BAB11} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
+		{72D48DA1-19FD-49A4-B905-F3FB80A796B0} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE166C46-7C68-4167-A6F9-B25022ED8490}
