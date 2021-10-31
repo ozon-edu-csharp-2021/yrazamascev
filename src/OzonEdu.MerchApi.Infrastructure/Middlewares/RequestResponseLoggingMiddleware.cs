@@ -30,7 +30,7 @@ namespace OzonEdu.MerchApi.Infrastructure.Middlewares
             await LogResponse(context, logBuilder);
         }
 
-        private void AddHttpHeaders(StringBuilder logBuilder, string header, IHeaderDictionary httpHeaders)
+        static private void AddHttpHeaders(StringBuilder logBuilder, string header, IHeaderDictionary httpHeaders)
         {
             if (httpHeaders.Count > 0)
             {
@@ -42,7 +42,7 @@ namespace OzonEdu.MerchApi.Infrastructure.Middlewares
             }
         }
 
-        private void AddHttpInformation(StringBuilder logBuilder, string header, object value)
+        static private void AddHttpInformation(StringBuilder logBuilder, string header, object value)
         {
             logBuilder.AppendLine($"\t{header,HEADER_PADDING}{value}");
         }
