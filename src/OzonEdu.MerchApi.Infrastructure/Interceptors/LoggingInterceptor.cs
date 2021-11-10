@@ -12,10 +12,7 @@ namespace OzonEdu.MerchApi.Infrastructure.Interceptors
     {
         private readonly ILogger<LoggingInterceptor> _logger;
 
-        public LoggingInterceptor(ILogger<LoggingInterceptor> logger)
-        {
-            _logger = logger;
-        }
+        public LoggingInterceptor(ILogger<LoggingInterceptor> logger) => _logger = logger;
 
         public override Task<TResponse> UnaryServerHandler<TRequest, TResponse>(TRequest request,
             ServerCallContext context,

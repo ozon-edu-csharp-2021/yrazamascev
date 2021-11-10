@@ -1,4 +1,4 @@
-﻿namespace OzonEdu.MerchApi.DTO
+﻿namespace OzonEdu.MerchApi.HttpModels
 {
     public sealed class IssueMerchResponse
     {

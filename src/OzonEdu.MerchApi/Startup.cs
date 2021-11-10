@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
+using OzonEdu.MerchApi.Domain.Infrastructure.Extensions;
 using OzonEdu.MerchApi.GrpcServices;
 using OzonEdu.MerchApi.Infrastructure.Interceptors;
 using OzonEdu.MerchApi.Services;
@@ -14,6 +15,8 @@ namespace OzonEdu.MerchApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IMerchService, MerchService>();
+            services.AddInfrastructureServices();
+
             services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
         }
 

@@ -1,8 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
 
-using OzonEdu.MerchApi.DTO;
+using Microsoft.AspNetCore.Mvc;
+
+using OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate;
+using OzonEdu.MerchApi.Domain.Infrastructure.Commands.CreateMerchOrder;
+using OzonEdu.MerchApi.Domain.Infrastructure.Commands.GetMerchOrders;
+using OzonEdu.MerchApi.HttpModels;
 using OzonEdu.MerchApi.Services.Interfaces;
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,33 +19,50 @@ namespace OzonEdu.MerchApi.Controllers
     public class MerchController : ControllerBase
     {
         private readonly IMerchService _service;
+        private readonly IMediator _mediator;
 
-        public MerchController(IMerchService service)
+        public MerchController(IMerchService service, IMediator mediator)
         {
             _service = service;
+            _mediator = mediator;
         }
 
-        [HttpPost("check-was-issued-merch")]
-        public async Task<ActionResult<CheckWasIssuedMerchResponse>> CheckWasIssuedMerch(CheckWasIssuedMerchRequest request, CancellationToken token)
+        [HttpPost("get-merch-orders")]
+        public async Task<ActionResult<GetMerchOrdersResponse>> GetMerchOrders(GetMerchOrdersRequest request, CancellationToken token)
         {
-            bool response = await _service.CheckWasIssuedMerch(request.EmployeeId, token);
+            GetMerchOrdersCommand command = new() { EmployeeId = request.EmployeeId };
 
-            return Ok(new CheckWasIssuedMerchResponse
+            List<MerchOrder> merchOrders = await _mediator.Send(command, token);
+
+            GetMerchOrdersResponse response = new()
             {
-                EmployeeId = request.EmployeeId,
-                WasIssued = response
-            });
+                MerchOrders = new List<MerchOrderViewModel>()
+            };
+
+            foreach (MerchOrder merchOrder in merchOrders)
+            {
+                response.MerchOrders.Add(new MerchOrderViewModel()
+                {
+                    DoneAt = merchOrder.DoneAt.Value,
+                    RequestType = merchOrder.RequestType.Name,
+                    EmployeeId = merchOrder.EmployeeId,
+                    ReserveAt = merchOrder.ReserveAt.Value,
+                    Status = merchOrder.Status.Name,
+                    Type = merchOrder.Type.Name,
+                });
+            }
+
+            return Ok(response);
         }
 
         [HttpPost("issue-merch")]
-        public async Task<ActionResult<IssueMerchResponse>> IssueMerch(IssueMerchRequest request, CancellationToken token)
+        public async Task<ActionResult<int>> IssueMerch(IssueMerchRequest request, CancellationToken token)
         {
-            bool response = await _service.IssueMerch(request.EmployeeId, token);
+            CreateManualMerchOrderCommand command = new() { EmployeeId = request.EmployeeId };
 
-            return Ok(new IssueMerchResponse()
-            {
-                EmployeeId = request.EmployeeId
-            });
+            int merchId = await _mediator.Send(command, token);
+
+            return Ok(merchId);
         }
     }
 }
