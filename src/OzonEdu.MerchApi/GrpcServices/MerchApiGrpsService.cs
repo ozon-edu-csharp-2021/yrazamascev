@@ -11,14 +11,11 @@ namespace OzonEdu.MerchApi.GrpcServices
     {
         private readonly IMerchService _service;
 
-        public MerchApiGrpsService(IMerchService service)
-        {
-            _service = service;
-        }
+        public MerchApiGrpsService(IMerchService service) => _service = service;
 
         public override async Task<CheckWasIssuedMerchResponse> CheckWasIssuedMerch(CheckWasIssuedMerchRequest request, ServerCallContext context)
         {
-            bool response = await _service.CheckWasIssuedMerch(request.EmployeeId, context.CancellationToken);
+            bool response = await _service.GetMerchOrders(request.EmployeeId, context.CancellationToken);
 
             return new CheckWasIssuedMerchResponse()
             {

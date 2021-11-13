@@ -7,7 +7,7 @@ namespace OzonEdu.MerchApi.Services
 {
     public class MerchService : IMerchService
     {
-        public async Task<bool> CheckWasIssuedMerch(long employeeId, CancellationToken token)
+        public async Task<bool> GetMerchOrders(long employeeId, CancellationToken token)
         {
             return true;
         }

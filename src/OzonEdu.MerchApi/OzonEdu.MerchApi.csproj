@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OzonEdu.MerchApi.Domain.Infrastructure\OzonEdu.MerchApi.Domain.Infrastructure.csproj" />
     <ProjectReference Include="..\OzonEdu.MerchApi.Grpc\OzonEdu.MerchApi.Grpc.csproj" />
+    <ProjectReference Include="..\OzonEdu.MerchApi.HttpModels\OzonEdu.MerchApi.HttpModels.csproj" />
     <ProjectReference Include="..\OzonEdu.MerchApi.Infrastructure\OzonEdu.MerchApi.Infrastructure.csproj" />
   </ItemGroup>
 

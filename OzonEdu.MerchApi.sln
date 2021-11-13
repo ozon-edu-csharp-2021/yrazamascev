@@ -26,7 +26,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Client", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Grpc", "src\OzonEdu.MerchApi.Grpc\OzonEdu.MerchApi.Grpc.csproj", "{094BAE47-7EB4-47D5-B58D-C0333F0BAB11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchApi.Infrastructure", "src\OzonEdu.MerchApi.Infrastructure\OzonEdu.MerchApi.Infrastructure.csproj", "{72D48DA1-19FD-49A4-B905-F3FB80A796B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Infrastructure", "src\OzonEdu.MerchApi.Infrastructure\OzonEdu.MerchApi.Infrastructure.csproj", "{72D48DA1-19FD-49A4-B905-F3FB80A796B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Domain", "src\OzonEdu.MerchApi.Domain\OzonEdu.MerchApi.Domain.csproj", "{204447A4-F260-462D-8B02-A380245A49FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Domain.Tests", "tests\OzonEdu.MerchApi.Domain.Tests\OzonEdu.MerchApi.Domain.Tests.csproj", "{D3537337-4A1F-443D-AE8A-EAA05A7C2539}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Domain.Infrastructure", "src\OzonEdu.MerchApi.Domain.Infrastructure\OzonEdu.MerchApi.Domain.Infrastructure.csproj", "{2E18EF27-AD43-4C69-998E-B03FA6A18D66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchApi.HttpModels", "src\OzonEdu.MerchApi.HttpModels\OzonEdu.MerchApi.HttpModels.csproj", "{D0E9A770-890F-4D45-8EE8-D712E476C506}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +58,22 @@ Global
 		{72D48DA1-19FD-49A4-B905-F3FB80A796B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72D48DA1-19FD-49A4-B905-F3FB80A796B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72D48DA1-19FD-49A4-B905-F3FB80A796B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{204447A4-F260-462D-8B02-A380245A49FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{204447A4-F260-462D-8B02-A380245A49FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{204447A4-F260-462D-8B02-A380245A49FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{204447A4-F260-462D-8B02-A380245A49FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3537337-4A1F-443D-AE8A-EAA05A7C2539}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3537337-4A1F-443D-AE8A-EAA05A7C2539}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3537337-4A1F-443D-AE8A-EAA05A7C2539}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3537337-4A1F-443D-AE8A-EAA05A7C2539}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E18EF27-AD43-4C69-998E-B03FA6A18D66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E18EF27-AD43-4C69-998E-B03FA6A18D66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E18EF27-AD43-4C69-998E-B03FA6A18D66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E18EF27-AD43-4C69-998E-B03FA6A18D66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0E9A770-890F-4D45-8EE8-D712E476C506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0E9A770-890F-4D45-8EE8-D712E476C506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0E9A770-890F-4D45-8EE8-D712E476C506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0E9A770-890F-4D45-8EE8-D712E476C506}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +83,10 @@ Global
 		{EBE75687-4B53-49A5-9F5D-6CD1EC210E5B} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 		{094BAE47-7EB4-47D5-B58D-C0333F0BAB11} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 		{72D48DA1-19FD-49A4-B905-F3FB80A796B0} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
+		{204447A4-F260-462D-8B02-A380245A49FD} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
+		{D3537337-4A1F-443D-AE8A-EAA05A7C2539} = {FAC77EA4-D572-4EE3-AD32-A641115FF3C0}
+		{2E18EF27-AD43-4C69-998E-B03FA6A18D66} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
+		{D0E9A770-890F-4D45-8EE8-D712E476C506} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE166C46-7C68-4167-A6F9-B25022ED8490}

@@ -1,4 +1,4 @@
-﻿using OzonEdu.MerchApi.DTO;
+﻿using OzonEdu.MerchApi.HttpModels;
 
 using System;
 using System.Net.Http;
@@ -12,21 +12,16 @@ namespace OzonEdu.MerchApi.Client
     {
         private readonly HttpClient _httpClient;
 
-        public MerchClient(HttpClient httpClient)
+        public MerchClient(HttpClient httpClient) => _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
+        public async Task<GetMerchOrdersResponse> GetMerchOrders(GetMerchOrdersRequest request, CancellationToken token)
         {
-            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/merch/get-merch-orders", request, token);
+
+            return await response.Content.ReadFromJsonAsync<GetMerchOrdersResponse>(cancellationToken: token);
         }
 
-        public async Task<CheckWasIssuedMerchResponse> CheckWasIssuedMerch(
-            CheckWasIssuedMerchRequest request, CancellationToken token)
-        {
-            using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/merch/check-was-issued-merch", request, token);
-
-            return await response.Content.ReadFromJsonAsync<CheckWasIssuedMerchResponse>(cancellationToken: token);
-        }
-
-        public async Task<IssueMerchResponse> IssueMerch(
-                    IssueMerchRequest request, CancellationToken token)
+        public async Task<IssueMerchResponse> IssueMerch(IssueMerchRequest request, CancellationToken token)
         {
             using HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/merch/issue-merch", request, token);
 

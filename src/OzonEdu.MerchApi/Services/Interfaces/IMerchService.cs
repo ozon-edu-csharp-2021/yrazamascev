@@ -5,7 +5,7 @@ namespace OzonEdu.MerchApi.Services.Interfaces
 {
     public interface IMerchService
     {
-        Task<bool> CheckWasIssuedMerch(long employeeId, CancellationToken token);
+        Task<bool> GetMerchOrders(long employeeId, CancellationToken token);
 
         Task<bool> IssueMerch(long employeeId, CancellationToken token);
     }
