@@ -6,7 +6,7 @@ using OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate;
 using OzonEdu.MerchApi.Domain.Infrastructure.Commands.CreateMerchOrder;
 using OzonEdu.MerchApi.Domain.Infrastructure.Commands.GetMerchOrders;
 using OzonEdu.MerchApi.HttpModels;
-using OzonEdu.MerchApi.Services.Interfaces;
+using OzonEdu.MerchApi.HttpModels.Helpers;
 
 using System.Collections.Generic;
 using System.Threading;
@@ -18,14 +18,9 @@ namespace OzonEdu.MerchApi.Controllers
     [Produces("application/json")]
     public class MerchController : ControllerBase
     {
-        private readonly IMerchService _service;
         private readonly IMediator _mediator;
 
-        public MerchController(IMerchService service, IMediator mediator)
-        {
-            _service = service;
-            _mediator = mediator;
-        }
+        public MerchController(IMediator mediator) => _mediator = mediator;
 
         [HttpPost("get-merch-orders")]
         public async Task<ActionResult<GetMerchOrdersResponse>> GetMerchOrders(GetMerchOrdersRequest request, CancellationToken token)
@@ -41,15 +36,7 @@ namespace OzonEdu.MerchApi.Controllers
 
             foreach (MerchOrder merchOrder in merchOrders)
             {
-                response.MerchOrders.Add(new MerchOrderViewModel()
-                {
-                    DoneAt = merchOrder.DoneAt.Value,
-                    RequestType = merchOrder.RequestType.Name,
-                    EmployeeId = merchOrder.EmployeeId,
-                    ReserveAt = merchOrder.ReserveAt.Value,
-                    Status = merchOrder.Status.Name,
-                    Type = merchOrder.Type.Name,
-                });
+                response.MerchOrders.Add(HttpModelsMapper.MerchOrderToViewModel(merchOrder));
             }
 
             return Ok(response);

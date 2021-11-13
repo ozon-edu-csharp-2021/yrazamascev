@@ -17,7 +17,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate
 
         public async Task<List<MerchOrder>> Handle(GetMerchOrdersCommand request, CancellationToken cancellationToken)
         {
-            List<MerchOrder> merchOrders = await _merchOrderRepository.FindByEmployeeIdAsync(request.EmployeeId, cancellationToken);
+            List<MerchOrder> merchOrders = await _merchOrderRepository.FindByEmployeeId(request.EmployeeId, cancellationToken);
 
             return merchOrders;
         }

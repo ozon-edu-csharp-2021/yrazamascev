@@ -8,7 +8,8 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
 {
     public interface IMerchOrderRepository : IRepository<MerchOrder>
     {
-        Task<MerchOrder> FindIssuedMerchAsync(long employeeId, int merchPackId, CancellationToken cancellationToken = default);
-        Task<List<MerchOrder>> FindByEmployeeIdAsync(long employeeId, CancellationToken cancellationToken);
+        Task<MerchOrder> FindIssuedMerch(long employeeId, int merchPackId, CancellationToken cancellationToken = default);
+
+        Task<List<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken);
     }
 }

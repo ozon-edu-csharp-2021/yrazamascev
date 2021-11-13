@@ -5,8 +5,8 @@ namespace OzonEdu.MerchApi.Domain.Contracts
 {
     public interface IUnitOfWork
     {
-        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task<int> SaveChanges(CancellationToken cancellationToken = default);
 
-        Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default);
+        Task<bool> SaveEntities(CancellationToken cancellationToken = default);
     }
 }

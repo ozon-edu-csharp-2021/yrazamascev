@@ -20,7 +20,7 @@ namespace OzonEdu.MerchApi.Domain.Contracts
         /// <param name="itemToCreate">Объект для создания</param>
         /// <param name="cancellationToken">Токен для отмены операции. <see cref="CancellationToken"/></param>
         /// <returns>Созданная сущность</returns>
-        Task<TAggregationRoot> CreateAsync(TAggregationRoot itemToCreate, CancellationToken cancellationToken = default);
+        Task<TAggregationRoot> Create(TAggregationRoot itemToCreate, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Обновить существующую сущность
@@ -28,6 +28,6 @@ namespace OzonEdu.MerchApi.Domain.Contracts
         /// <param name="itemToUpdate">Объект для создания</param>
         /// <param name="cancellationToken">Токен для отмены операции. <see cref="CancellationToken"/></param>
         /// <returns>Обновленная сущность сущность</returns>
-        Task<TAggregationRoot> UpdateAsync(TAggregationRoot itemToUpdate, CancellationToken cancellationToken = default);
+        Task<TAggregationRoot> Update(TAggregationRoot itemToUpdate, CancellationToken cancellationToken = default);
     }
 }

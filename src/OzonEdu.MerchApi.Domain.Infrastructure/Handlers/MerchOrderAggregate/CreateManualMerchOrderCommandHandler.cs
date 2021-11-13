@@ -38,7 +38,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate
 
         public async Task<int> Handle(CreateManualMerchOrderCommand request, CancellationToken cancellationToken)
         {
-            MerchOrder merchOrder = await _merchOrderRepository.FindIssuedMerchAsync(request.EmployeeId, request.MerchPackId, cancellationToken);
+            MerchOrder merchOrder = await _merchOrderRepository.FindIssuedMerch(request.EmployeeId, request.MerchPackId, cancellationToken);
             if (merchOrder is not null)
             {
                 throw new Exception($"Merch has already been issued");
@@ -46,12 +46,17 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate
 
             MerchPackType merchPackType = MerchPackType.GetAll<MerchPackType>().FirstOrDefault(m => m.Id == request.MerchPackId);
 
-            MerchPack merchPack = await _merchPackRepository.FindByTypeAsync(merchPackType, cancellationToken);
+            if (merchPackType is null)
+            {
+                throw new Exception($"Merch pack type not found");
+            }
+
+            MerchPack merchPack = await _merchPackRepository.FindByType(merchPackType, cancellationToken);
 
             List<StockItemResponse> stockItems = await _stockApiService.GetAll(cancellationToken);
 
             stockItems = stockItems.Where(i =>
-            merchPack.ItemPackCollection.Select(ip => ip.StockItem.Value).Contains(i.Id)
+            merchPack.ItemPackCollection.Any(ip => ip.StockItem.Value == i.Id)
             && (i.ClothingSize is null || i.ClothingSize == request.ClothingSize)).ToList();
 
             bool isEnough = true;
@@ -88,7 +93,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate
                 }
             }
 
-            merchOrder = await _merchOrderRepository.CreateAsync(merchOrder, cancellationToken);
+            merchOrder = await _merchOrderRepository.Create(merchOrder, cancellationToken);
 
             return merchOrder.Id;
         }

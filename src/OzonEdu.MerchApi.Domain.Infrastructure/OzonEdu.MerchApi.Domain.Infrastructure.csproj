@@ -5,13 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpCourse.Core.Lib" Version="1.4.0" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <Compile Remove="Queries\**" />
+    <Compile Remove="Stubs\**" />
+    <EmbeddedResource Remove="Queries\**" />
+    <EmbeddedResource Remove="Stubs\**" />
+    <None Remove="Queries\**" />
+    <None Remove="Stubs\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Queries\" />
-    <Folder Include="Stubs\" />
+    <PackageReference Include="CSharpCourse.Core.Lib" Version="1.4.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
