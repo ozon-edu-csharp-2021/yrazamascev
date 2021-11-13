@@ -26,7 +26,6 @@ namespace OzonEdu.MerchApi.Controllers
         public async Task<ActionResult<GetMerchOrdersResponse>> GetMerchOrders(GetMerchOrdersRequest request, CancellationToken token)
         {
             GetMerchOrdersCommand command = new() { EmployeeId = request.EmployeeId };
-
             List<MerchOrder> merchOrders = await _mediator.Send(command, token);
 
             GetMerchOrdersResponse response = new()
@@ -43,13 +42,14 @@ namespace OzonEdu.MerchApi.Controllers
         }
 
         [HttpPost("issue-merch")]
-        public async Task<ActionResult<int>> IssueMerch(IssueMerchRequest request, CancellationToken token)
+        public async Task<ActionResult<IssueMerchResponse>> IssueMerch(IssueMerchRequest request, CancellationToken token)
         {
             CreateManualMerchOrderCommand command = new() { EmployeeId = request.EmployeeId };
 
-            int merchId = await _mediator.Send(command, token);
+            int merchOrderId = await _mediator.Send(command, token);
+            IssueMerchResponse response = new() { MerchOrderId = merchOrderId };
 
-            return Ok(merchId);
+            return Ok(response);
         }
     }
 }

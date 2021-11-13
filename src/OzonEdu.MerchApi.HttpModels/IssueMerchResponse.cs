@@ -2,6 +2,6 @@
 {
     public sealed class IssueMerchResponse
     {
-        public long EmployeeId { get; set; }
+        public long MerchOrderId { get; set; }
     }
 }
