@@ -1,12 +1,13 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OzonEdu.MerchApi.Domain.Contracts
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
-        Task<int> SaveChanges(CancellationToken cancellationToken = default);
+        ValueTask StartTransaction(CancellationToken token);
 
-        Task<bool> SaveEntities(CancellationToken cancellationToken = default);
+        Task SaveChanges(CancellationToken token);
     }
 }

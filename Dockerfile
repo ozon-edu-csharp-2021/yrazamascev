@@ -12,8 +12,12 @@ RUN dotnet build "OzonEdu.MerchApi.csproj" -c Release -o /app/build
 
 FROM build AS publish
 RUN dotnet publish "OzonEdu.MerchApi.csproj" -c Release -o /app/publish
+COPY "entrypoint.sh" "/app/publish/."
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "OzonEdu.MerchApi.dll"]
+
+RUN chmod +x entrypoint.sh
+CMD /bin/bash entrypoint.sh

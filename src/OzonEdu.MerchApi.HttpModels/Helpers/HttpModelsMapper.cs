@@ -13,7 +13,7 @@ namespace OzonEdu.MerchApi.HttpModels.Helpers
                 EmployeeId = merchOrder.EmployeeId,
                 ReserveAt = merchOrder.ReserveAt.Value,
                 Status = merchOrder.Status.Name,
-                Type = merchOrder.Type.Name,
+                Type = merchOrder.PackType.Name,
             };
         }
     }

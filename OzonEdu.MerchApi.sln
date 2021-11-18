@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{D15B23
 		.editorconfig = .editorconfig
 		.gitignore = .gitignore
 		Dockerfile = Dockerfile
+		entrypoint.sh = entrypoint.sh
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -34,7 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Domain.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Domain.Infrastructure", "src\OzonEdu.MerchApi.Domain.Infrastructure\OzonEdu.MerchApi.Domain.Infrastructure.csproj", "{2E18EF27-AD43-4C69-998E-B03FA6A18D66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchApi.HttpModels", "src\OzonEdu.MerchApi.HttpModels\OzonEdu.MerchApi.HttpModels.csproj", "{D0E9A770-890F-4D45-8EE8-D712E476C506}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.HttpModels", "src\OzonEdu.MerchApi.HttpModels\OzonEdu.MerchApi.HttpModels.csproj", "{D0E9A770-890F-4D45-8EE8-D712E476C506}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchApi.Migrator", "src\OzonEdu.MerchApi.Migrator\OzonEdu.MerchApi.Migrator.csproj", "{CE719FA2-E94E-430A-98EE-E9FDDA82C36F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +77,10 @@ Global
 		{D0E9A770-890F-4D45-8EE8-D712E476C506}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0E9A770-890F-4D45-8EE8-D712E476C506}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0E9A770-890F-4D45-8EE8-D712E476C506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE719FA2-E94E-430A-98EE-E9FDDA82C36F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE719FA2-E94E-430A-98EE-E9FDDA82C36F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE719FA2-E94E-430A-98EE-E9FDDA82C36F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE719FA2-E94E-430A-98EE-E9FDDA82C36F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +94,7 @@ Global
 		{D3537337-4A1F-443D-AE8A-EAA05A7C2539} = {FAC77EA4-D572-4EE3-AD32-A641115FF3C0}
 		{2E18EF27-AD43-4C69-998E-B03FA6A18D66} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 		{D0E9A770-890F-4D45-8EE8-D712E476C506} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
+		{CE719FA2-E94E-430A-98EE-E9FDDA82C36F} = {CBEFC3F4-5FD2-4561-BCEA-8D8DFFF93BDE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AE166C46-7C68-4167-A6F9-B25022ED8490}

@@ -24,19 +24,19 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
 
         public MerchOrderStatus Status { get; private set; }
 
-        public MerchPackType Type { get; }
+        public MerchPackType PackType { get; }
 
         public MerchOrder(long employee,
                           IReadOnlyList<SkuPack> skuPackCollection,
                           MerchRequestType requestType,
-                          MerchPackType type)
+                          MerchPackType packType)
         {
             InWorkAt = new DateAt(DateTimeOffset.UtcNow);
             EmployeeId = employee;
             SkuPackCollection = skuPackCollection;
             RequestType = requestType;
             Status = MerchOrderStatus.InWork;
-            Type = type;
+            PackType = packType;
         }
 
         public void Done()
