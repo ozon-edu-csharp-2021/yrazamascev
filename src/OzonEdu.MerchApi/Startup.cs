@@ -56,12 +56,12 @@ namespace OzonEdu.MerchApi
             services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
         }
 
-        private static void AddMediator(IServiceCollection services)
+        static private void AddMediator(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions));
         }
 
-        private static void AddRepositories(IServiceCollection services)
+        static private void AddRepositories(IServiceCollection services)
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             services.AddScoped<IItemPackRepository, ItemPackRepository>();

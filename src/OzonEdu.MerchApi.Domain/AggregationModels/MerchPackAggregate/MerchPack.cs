@@ -8,9 +8,9 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchPackAggregate
 {
     public class MerchPack : Entity
     {
-        public IReadOnlyList<ItemPack> ItemPackCollection { get; }
-
         public MerchPackType PackType { get; }
+
+        public IReadOnlyList<ItemPack> ItemPackCollection { get; }
 
         public MerchPack(MerchPackType packType, IReadOnlyList<ItemPack> itemPackCollection)
         {

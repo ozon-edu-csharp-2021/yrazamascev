@@ -5,8 +5,9 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.SkuPackAggregate
 {
     public class SkuPack : Entity
     {
-        public Quantity Quantity { get; private set; }
         public Sku Sku { get; }
+
+        public Quantity Quantity { get; private set; }
 
         public SkuPack(Sku sku, Quantity quantity)
         {

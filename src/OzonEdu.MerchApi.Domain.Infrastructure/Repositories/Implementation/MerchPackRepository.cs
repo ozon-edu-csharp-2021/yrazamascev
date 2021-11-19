@@ -1,21 +1,26 @@
+using Dapper;
+
 using Npgsql;
 
 using OzonEdu.MerchApi.Domain.AggregationModels.Enumerations;
 using OzonEdu.MerchApi.Domain.AggregationModels.MerchPackAggregate;
-using OzonEdu.MerchApi.Domain.Contracts;
+using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Extension;
+using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Helpers;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
 
-using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using static Dapper.SqlMapper;
 
 namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
 {
     public class MerchPackRepository : IMerchPackRepository
     {
+        private const int TIMEOUT = 5;
         private readonly IChangeTracker _changeTracker;
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
-        public IUnitOfWork UnitOfWork { get; }
 
         public MerchPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IChangeTracker changeTracker)
         {
@@ -23,19 +28,60 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
             _changeTracker = changeTracker;
         }
 
-        public Task<MerchPack> Create(MerchPack itemToCreate, CancellationToken cancellationToken = default)
+        public async Task<MerchPack> FindByType(MerchPackType merchPackType, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+            const string sql = @"
+                SELECT
+                    MerchPack.Id
+                    ,MerchPack.MerchPackType_id
 
-        public Task<MerchPack> FindByType(MerchPackType merchPackType, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
+                FROM MerchPack
+                JOIN MerchPackType ON MerchPackType.Id = MerchPack.MerchPackType_id
+                WHERE MerchPackType.Id = @MerchPackTypeId
 
-        public Task<MerchPack> Update(MerchPack itemToUpdate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+                SELECT
+                    ItemPack.Id
+                    ,ItemPack.MerchPack_id
+                    ,ItemPack.StockItem_id
+                    ,ItemPack.Quantity
+
+                FROM ItemPack
+                WHERE ItemPack.MerchPack_id IN (
+                        SELECT Id
+                        FROM MerchPack
+                        WHERE MerchPackType_id = @MerchPackTypeId);";
+
+            var parameters = new
+            {
+                MerchPackTypeId = merchPackType.Id,
+            };
+
+            NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+
+            CommandDefinition commandDefinition = new(
+                sql,
+                parameters: parameters,
+                commandTimeout: TIMEOUT,
+                cancellationToken: cancellationToken);
+
+            GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
+
+            Models.MerchPack merchPackModel = reader
+                .Map<Models.MerchPack, Models.ItemPack, long>
+                (
+                    merchPack => merchPack.Id,
+                    itemPack => itemPack.MerchPackId,
+                    (merchPack, itemPacks) => merchPack.ItemPackCollection = itemPacks
+                ).FirstOrDefault();
+
+            MerchPack merchPack = ModelsMapper.MerchPackModelToEntity(merchPackModel);
+
+            if (merchPack is not null)
+            {
+                _changeTracker.Track(merchPack);
+            }
+
+            return merchPack;
         }
     }
 }

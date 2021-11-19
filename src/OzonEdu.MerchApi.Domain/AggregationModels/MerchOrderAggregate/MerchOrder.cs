@@ -10,33 +10,56 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
 {
     public class MerchOrder : Entity
     {
-        public DateAt DoneAt { get; private set; }
-
-        public DateAt ReserveAt { get; private set; }
-
-        public long EmployeeId { get; }
-
-        public DateAt InWorkAt { get; }
-
-        public IReadOnlyList<SkuPack> SkuPackCollection { get; }
-
-        public MerchRequestType RequestType { get; }
+        public MerchPackType PackType { get; }
 
         public MerchOrderStatus Status { get; private set; }
 
-        public MerchPackType PackType { get; }
+        public MerchRequestType RequestType { get; }
 
-        public MerchOrder(long employee,
-                          IReadOnlyList<SkuPack> skuPackCollection,
-                          MerchRequestType requestType,
-                          MerchPackType packType)
+        public DateAt InWorkAt { get; }
+
+        public DateAt ReserveAt { get; private set; }
+
+        public DateAt DoneAt { get; private set; }
+
+        public long EmployeeId { get; }
+
+        public IReadOnlyList<SkuPack> SkuPackCollection { get; }
+
+        public MerchOrder(
+            long id,
+            MerchPackType packType,
+            MerchOrderStatus status,
+            MerchRequestType requestType,
+            DateAt inWorkAt,
+            DateAt reserveAt,
+            DateAt doneAt,
+            long employeeId,
+            IReadOnlyList<SkuPack> skuPackCollection)
         {
-            InWorkAt = new DateAt(DateTimeOffset.UtcNow);
-            EmployeeId = employee;
-            SkuPackCollection = skuPackCollection;
-            RequestType = requestType;
-            Status = MerchOrderStatus.InWork;
+            Id = id;
             PackType = packType;
+            Status = status;
+            RequestType = requestType;
+            InWorkAt = inWorkAt;
+            ReserveAt = reserveAt;
+            DoneAt = doneAt;
+            EmployeeId = employeeId;
+            SkuPackCollection = skuPackCollection;
+        }
+
+        public MerchOrder(
+            MerchPackType packType,
+            MerchRequestType requestType,
+            long employeeId,
+            IReadOnlyList<SkuPack> skuPackCollection)
+        {
+            PackType = packType;
+            Status = MerchOrderStatus.InWork;
+            RequestType = requestType;
+            InWorkAt = new DateAt(DateTimeOffset.UtcNow);
+            EmployeeId = employeeId;
+            SkuPackCollection = skuPackCollection;
         }
 
         public void Done()

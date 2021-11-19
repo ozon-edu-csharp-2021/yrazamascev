@@ -7,6 +7,7 @@ using OzonEdu.MerchApi.Domain.Infrastructure.Commands.CreateMerchOrder;
 using OzonEdu.MerchApi.Domain.Infrastructure.Commands.GetMerchOrders;
 using OzonEdu.MerchApi.HttpModels;
 using OzonEdu.MerchApi.HttpModels.Helpers;
+using OzonEdu.MerchApi.Infrastructure.Extensions;
 
 using System.Collections.Generic;
 using System.Threading;
@@ -30,13 +31,8 @@ namespace OzonEdu.MerchApi.Controllers
 
             GetMerchOrdersResponse response = new()
             {
-                MerchOrders = new List<MerchOrderViewModel>()
+                MerchOrders = merchOrders.Map(entity => HttpModelsMapper.MerchOrderToViewModel(entity))
             };
-
-            foreach (MerchOrder merchOrder in merchOrders)
-            {
-                response.MerchOrders.Add(HttpModelsMapper.MerchOrderToViewModel(merchOrder));
-            }
 
             return Ok(response);
         }
@@ -46,8 +42,8 @@ namespace OzonEdu.MerchApi.Controllers
         {
             CreateManualMerchOrderCommand command = new() { EmployeeId = request.EmployeeId };
 
-            int merchOrderId = await _mediator.Send(command, token);
-            IssueMerchResponse response = new() { MerchOrderId = merchOrderId };
+            MerchOrder merchOrder = await _mediator.Send(command, token);
+            IssueMerchResponse response = new() { MerchOrder = HttpModelsMapper.MerchOrderToViewModel(merchOrder) };
 
             return Ok(response);
         }

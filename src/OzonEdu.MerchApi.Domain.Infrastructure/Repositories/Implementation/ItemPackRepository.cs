@@ -1,12 +1,7 @@
 using Npgsql;
 
 using OzonEdu.MerchApi.Domain.AggregationModels.ItemPackAggregate;
-using OzonEdu.MerchApi.Domain.Contracts;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
-
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
 {
@@ -19,18 +14,6 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         {
             _dbConnectionFactory = dbConnectionFactory;
             _changeTracker = changeTracker;
-        }
-
-        public IUnitOfWork UnitOfWork { get; }
-
-        public Task<ItemPack> Create(ItemPack itemToCreate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ItemPack> Update(ItemPack itemToUpdate, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
         }
     }
 }
