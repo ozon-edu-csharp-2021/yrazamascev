@@ -21,9 +21,9 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Models
 
         public DateTimeOffset InWorkAt { get; set; }
 
-        public DateTimeOffset ReserveAt { get; set; }
+        public DateTimeOffset? ReserveAt { get; set; }
 
-        public DateTimeOffset DoneAt { get; set; }
+        public DateTimeOffset? DoneAt { get; set; }
 
         public long EmployeeId { get; set; }
 

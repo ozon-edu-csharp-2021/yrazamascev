@@ -28,10 +28,10 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         public async Task<List<SkuPack>> Create(MerchOrder merchOrder, CancellationToken cancellationToken)
         {
             const string sql = @"
-                INSERT INTO SkuPack (
-                    MerchOrder_id
-                    ,Sku_id
-                    ,Quantity
+                INSERT INTO sku_pack (
+                    merch_order_id
+                    ,sku_id
+                    ,quantity
                 )
                 OUTPUT INSERTED.Id
                 VALUES (

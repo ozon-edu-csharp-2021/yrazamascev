@@ -26,9 +26,12 @@ namespace OzonEdu.MerchApi.Controllers
         [HttpPost("get-merch-orders")]
         public async Task<ActionResult<GetMerchOrdersResponse>> GetMerchOrders(GetMerchOrdersRequest request, CancellationToken token)
         {
-            GetMerchOrdersCommand command = new() { EmployeeId = request.EmployeeId };
-            List<MerchOrder> merchOrders = await _mediator.Send(command, token);
+            GetMerchOrdersCommand command = new()
+            {
+                EmployeeId = request.EmployeeId
+            };
 
+            List<MerchOrder> merchOrders = await _mediator.Send(command, token);
             GetMerchOrdersResponse response = new()
             {
                 MerchOrders = merchOrders.Map(entity => HttpModelsMapper.MerchOrderToViewModel(entity))
@@ -40,10 +43,18 @@ namespace OzonEdu.MerchApi.Controllers
         [HttpPost("issue-merch")]
         public async Task<ActionResult<IssueMerchResponse>> IssueMerch(IssueMerchRequest request, CancellationToken token)
         {
-            CreateManualMerchOrderCommand command = new() { EmployeeId = request.EmployeeId };
+            CreateManualMerchOrderCommand command = new()
+            {
+                EmployeeId = request.EmployeeId,
+                ClothingSize = request.ClothingSize,
+                MerchPackId = request.MerchPackId,
+            };
 
             MerchOrder merchOrder = await _mediator.Send(command, token);
-            IssueMerchResponse response = new() { MerchOrder = HttpModelsMapper.MerchOrderToViewModel(merchOrder) };
+            IssueMerchResponse response = new()
+            {
+                MerchOrder = HttpModelsMapper.MerchOrderToViewModel(merchOrder)
+            };
 
             return Ok(response);
         }

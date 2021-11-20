@@ -7,21 +7,22 @@ namespace OzonEdu.MerchApi.Migrator.Migrations
     {
         public override void Up()
         {
-            Create
-                .Table("MerchOrder")
-                .WithColumn("Id").AsInt64().Identity().PrimaryKey()
-                .WithColumn("MerchPackType_id").AsInt32().NotNullable()
-                .WithColumn("MerchOrderStatus_id").AsInt32().NotNullable()
-                .WithColumn("MerchRequestType_id").AsInt32().NotNullable()
-                .WithColumn("InWorkAt").AsDateTimeOffset(0).NotNullable()
-                .WithColumn("ReserveAt").AsDateTimeOffset(0).Nullable()
-                .WithColumn("DoneAt").AsDateTimeOffset(0).Nullable()
-                .WithColumn("Employee_id").AsInt64().NotNullable();
+            Execute.Sql(@"
+                CREATE TABLE IF NOT EXISTS merch_order (
+	                id BIGSERIAL NOT NULL,
+	                merch_pack_type_id INT NOT NULL,
+	                merch_order_status_id INT NOT NULL,
+	                merch_request_type_id INT NOT NULL,
+	                in_work_at TIMESTAMPTZ NOT NULL,
+	                reserve_at TIMESTAMPTZ NULL,
+	                done_at TIMESTAMPTZ NULL,
+	                employee_id BIGSERIAL NOT NULL,
+                    CONSTRAINT ""PK_merch_order"" PRIMARY KEY (id));");
         }
 
         public override void Down()
         {
-            Delete.Table("MerchOrder");
+            Execute.Sql("DROP TABLE IF EXISTS merch_order;");
         }
     }
 }

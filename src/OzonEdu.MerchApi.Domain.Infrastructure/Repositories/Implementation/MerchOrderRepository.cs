@@ -32,14 +32,14 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         public async Task<MerchOrder> Create(MerchOrder itemToCreate, CancellationToken cancellationToken)
         {
             const string sql = @"
-                INSERT INTO MerchOrder (
-                    MerchPackType_id
-                    ,MerchOrderStatus_id
-                    ,MerchRequestType_id
-                    ,InWorkAt
-                    ,ReserveAt
-                    ,DoneAt
-                    ,Employee_id
+                INSERT INTO merch_order (
+                    merch_pack_type_id
+                    ,merch_order_status_id
+                    ,merch_request_type_id
+                    ,in_work_at
+                    ,reserve_at
+                    ,done_at
+                    ,employee_id
                 )
                 OUTPUT INSERTED.Id
                 VALUES (
@@ -81,40 +81,31 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         public async Task<List<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken)
         {
             const string sql = @"
-                SELECT
-                    MerchOrder.Id
-
-                    ,MerchPackType.Id
-                    ,MerchPackType.Name
-
-                    ,MerchOrderStatus.Id
-                    ,MerchOrderStatus.Name
-
-                    ,MerchRequestType.Id
-                    ,MerchRequestType.Name
-
-                    ,MerchOrder.InWorkAt
-                    ,MerchOrder.ReserveAt
-                    ,MerchOrder.DoneAt
-                    ,MerchOrder.Employee_id
-
-                FROM MerchOrder
-                JOIN MerchPackType ON MerchPackType.Id = MerchOrder.MerchPackType_id
-                JOIN MerchOrderStatus ON MerchOrderStatus.Id = MerchOrder.MerchOrderStatus_id
-                JOIN MerchRequestType ON MerchRequestType.Id = MerchOrder.MerchRequestType_id
-                WHERE MerchOrder.Employee_id = @EmployeeId
-
-                SELECT
-                    SkuPack.Id
-                    ,SkuPack.MerchOrder_id
-                    ,SkuPack.Sku_id
-                    ,SkuPack.Quantity
-
-                FROM SkuPack
-                WHERE SkuPack.MerchOrder_id IN (
-                        SELECT Id
-                        FROM MerchOrder
-                        WHERE Employee_id = @EmployeeId);";
+                SELECT merch_order.id
+                    ,merch_pack_type.id
+                    ,merch_pack_type.name
+                    ,merch_order_status.id
+                    ,merch_order_status.name
+                    ,merch_request_type.id
+                    ,merch_request_type.name
+                    ,merch_order.in_work_at
+                    ,merch_order.reserve_at
+                    ,merch_order.done_at
+                    ,merch_order.employee_id
+                FROM merch_order
+                JOIN merch_pack_type ON merch_pack_type.id = merch_order.merch_pack_type_id
+                JOIN merch_order_status ON merch_order_status.id = merch_order.merch_order_status_id
+                JOIN merch_request_type ON merch_request_type.id = merch_order.merch_request_type_id
+                WHERE merch_order.employee_id = @EmployeeId ;
+                SELECT sku_pack.id
+                    ,sku_pack.merch_order_id
+                    ,sku_pack.sku_id
+                    ,sku_pack.quantity
+                FROM sku_pack
+                WHERE sku_pack.merch_order_id IN (
+                        SELECT id
+                        FROM merch_order
+                        WHERE employee_id = @EmployeeId) ;";
 
             var parameters = new
             {
@@ -127,40 +118,31 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         public async Task<List<MerchOrder>> FindIssuedMerch(long employeeId, int merchPackId, CancellationToken cancellationToken = default)
         {
             const string sql = @"
-                SELECT
-                    MerchOrder.Id
-
-                    ,MerchPackType.Id
-                    ,MerchPackType.Name
-
-                    ,MerchOrderStatus.Id
-                    ,MerchOrderStatus.Name
-
-                    ,MerchRequestType.Id
-                    ,MerchRequestType.Name
-
-                    ,MerchOrder.InWorkAt
-                    ,MerchOrder.ReserveAt
-                    ,MerchOrder.DoneAt
-                    ,MerchOrder.Employee_id
-
-                FROM MerchOrder
-                JOIN MerchPackType ON MerchPackType.Id = MerchOrder.MerchPackType_id
-                JOIN MerchOrderStatus ON MerchOrderStatus.Id = MerchOrder.MerchOrderStatus_id
-                JOIN MerchRequestType ON MerchRequestType.Id = MerchOrder.MerchRequestType_id
-                WHERE MerchOrder.Employee_id = @EmployeeId AND MerchPackType.Id = @MerchPackTypeId
-
-                SELECT
-                    SkuPack.Id
-                    ,SkuPack.MerchOrder_id
-                    ,SkuPack.Sku_id
-                    ,SkuPack.Quantity
-
-                FROM SkuPack
-                WHERE SkuPack.MerchOrder_id IN (
-                        SELECT Id
-                        FROM MerchOrder
-                        WHERE Employee_id = @EmployeeId AND MerchPackType_id = @MerchPackTypeId);";
+                SELECT merch_order.id
+                    ,merch_pack_type.id
+                    ,merch_pack_type.name
+                    ,merch_order_status.id
+                    ,merch_order_status.name
+                    ,merch_request_type.id
+                    ,merch_request_type.name
+                    ,merch_order.in_work_at
+                    ,merch_order.reserve_at
+                    ,merch_order.done_at
+                    ,merch_order.employee_id
+                FROM merch_order
+                JOIN merch_pack_type ON merch_pack_type.id = merch_order.merch_pack_type_id
+                JOIN merch_order_status ON merch_order_status.id = merch_order.merch_order_status_id
+                JOIN merch_request_type ON merch_request_type.id = merch_order.merch_request_type_id
+                WHERE merch_order.Employee_id = @EmployeeId AND merch_pack_type.Id = @MerchPackTypeId ;
+                SELECT sku_pack.id
+                    ,sku_pack.merch_order_id
+                    ,sku_pack.sku_id
+                    ,sku_pack.quantity
+                FROM sku_pack
+                WHERE sku_pack.merch_order_id IN (
+                        SELECT id
+                        FROM merch_order
+                        WHERE employee_id = @EmployeeId AND merch_pack_type_id = @MerchPackTypeId) ;";
 
             var parameters = new
             {

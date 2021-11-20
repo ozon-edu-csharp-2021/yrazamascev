@@ -49,19 +49,10 @@ services:
           - stock-api
           - merch-api-db
 
-    merch-api-db:
-        image: postgres:latest
-        ports:
-         - "5033:80"
-        environment:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: merchApiPassword
-            POSTGRES_DB: merch-api
-
     supply-service-db:
         image: postgres:latest
         ports:
-         - "5034:80"
+         - "5034:5432"
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: supplyServicePassword
@@ -70,7 +61,7 @@ services:
     employees-service-db:
         image: postgres:latest
         ports:
-         - "5030:80"
+         - "5030:5432"
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
@@ -81,8 +72,17 @@ services:
     stock-api-db:
         image: postgres:latest
         ports:
-         - "5032:80"
+         - "5032:5432"
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: stockApiPassword
             POSTGRES_DB: stock-api
+
+    merch-api-db:
+        image: postgres:latest
+        ports:
+         - "5033:5432"
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: merchApiPassword
+            POSTGRES_DB: merch-api

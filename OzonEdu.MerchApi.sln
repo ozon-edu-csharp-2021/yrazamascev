@@ -17,6 +17,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FAC77EA4-D572-4EE3-AD32-A641115FF3C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi", "src\OzonEdu.MerchApi\OzonEdu.MerchApi.csproj", "{60A9791E-941A-46B0-8D5E-4550D3454F5D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CE719FA2-E94E-430A-98EE-E9FDDA82C36F} = {CE719FA2-E94E-430A-98EE-E9FDDA82C36F}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{19AD18F2-AA96-4EAE-9F38-4EDE2AB89D55}"
 	ProjectSection(SolutionItems) = preProject
@@ -37,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Domain.Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.HttpModels", "src\OzonEdu.MerchApi.HttpModels\OzonEdu.MerchApi.HttpModels.csproj", "{D0E9A770-890F-4D45-8EE8-D712E476C506}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OzonEdu.MerchApi.Migrator", "src\OzonEdu.MerchApi.Migrator\OzonEdu.MerchApi.Migrator.csproj", "{CE719FA2-E94E-430A-98EE-E9FDDA82C36F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OzonEdu.MerchApi.Migrator", "src\OzonEdu.MerchApi.Migrator\OzonEdu.MerchApi.Migrator.csproj", "{CE719FA2-E94E-430A-98EE-E9FDDA82C36F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

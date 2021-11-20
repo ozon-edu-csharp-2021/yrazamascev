@@ -8,7 +8,7 @@ namespace OzonEdu.StockApi.Migrator.Temp
         public override void Up()
         {
             Execute.Sql(@"
-                INSERT INTO MerchPackType (Id, Name)
+                INSERT INTO merch_pack_type (id, name)
                 VALUES
                     (10, 'Welcome'),
                     (20, 'Starter'),
@@ -19,7 +19,7 @@ namespace OzonEdu.StockApi.Migrator.Temp
             ");
 
             Execute.Sql(@"
-                INSERT INTO MerchOrderStatus (Id, Name)
+                INSERT INTO merch_order_status (id, name)
                 VALUES
                     (10, 'InWork'),
                     (20, 'IsReserved'),
@@ -28,7 +28,7 @@ namespace OzonEdu.StockApi.Migrator.Temp
             ");
 
             Execute.Sql(@"
-                INSERT INTO MerchRequestType (Id, Name)
+                INSERT INTO merch_request_type (id, name)
                 VALUES
                     (10, 'Auto'),
                     (20, 'Manual')

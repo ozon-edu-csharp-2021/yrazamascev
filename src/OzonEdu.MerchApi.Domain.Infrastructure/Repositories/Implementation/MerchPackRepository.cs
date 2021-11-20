@@ -31,25 +31,20 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         public async Task<MerchPack> FindByType(MerchPackType merchPackType, CancellationToken cancellationToken)
         {
             const string sql = @"
-                SELECT
-                    MerchPack.Id
-                    ,MerchPack.MerchPackType_id
-
-                FROM MerchPack
-                JOIN MerchPackType ON MerchPackType.Id = MerchPack.MerchPackType_id
-                WHERE MerchPackType.Id = @MerchPackTypeId
-
-                SELECT
-                    ItemPack.Id
-                    ,ItemPack.MerchPack_id
-                    ,ItemPack.StockItem_id
-                    ,ItemPack.Quantity
-
-                FROM ItemPack
-                WHERE ItemPack.MerchPack_id IN (
-                        SELECT Id
-                        FROM MerchPack
-                        WHERE MerchPackType_id = @MerchPackTypeId);";
+                SELECT merch_pack.id
+                    ,merch_pack.merch_pack_type_id
+                FROM merch_pack
+                JOIN merch_pack_type ON merch_pack_type.id = merch_pack.merch_pack_type_id
+                WHERE merch_pack_type.id = @MerchPackTypeId ;
+                SELECT item_pack.id
+                    ,item_pack.merch_pack_id
+                    ,item_pack.stock_item_id
+                    ,item_pack.quantity
+                FROM item_pack
+                WHERE item_pack.merch_pack_id IN (
+                        SELECT id
+                        FROM merch_pack
+                        WHERE merch_pack_type_id = @MerchPackTypeId) ;";
 
             var parameters = new
             {

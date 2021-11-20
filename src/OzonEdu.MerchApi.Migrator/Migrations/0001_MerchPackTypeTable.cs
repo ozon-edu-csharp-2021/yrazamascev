@@ -8,14 +8,14 @@ namespace OzonEdu.MerchApi.Migrator.Migrations
         public override void Up()
         {
             Create
-                .Table("MerchPackType")
-                .WithColumn("Id").AsInt32().Identity().PrimaryKey()
-                .WithColumn("Name").AsString().NotNullable();
+                .Table("merch_pack_type")
+                .WithColumn("id").AsInt32().PrimaryKey()
+                .WithColumn("name").AsString().NotNullable();
         }
 
         public override void Down()
         {
-            Delete.Table("MerchPackType");
+            Delete.Table("merch_pack_type");
         }
     }
 }

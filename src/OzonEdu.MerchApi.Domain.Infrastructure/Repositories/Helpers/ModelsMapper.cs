@@ -31,8 +31,8 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Helpers
                 new MerchOrderStatus(model.StatusId, model.StatusName),
                 new MerchRequestType(model.RequestTypeId, model.RequestTypeName),
                 new DateAt(model.InWorkAt),
-                new DateAt(model.ReserveAt),
-                new DateAt(model.DoneAt),
+                model.ReserveAt is null ? null : new DateAt(model.ReserveAt.Value),
+                model.DoneAt is null ? null : new DateAt(model.DoneAt.Value),
                 model.EmployeeId,
                 model.SkuPackCollection.Map(model => SkuPackModelToEntity(model)).ToList()));
         }
