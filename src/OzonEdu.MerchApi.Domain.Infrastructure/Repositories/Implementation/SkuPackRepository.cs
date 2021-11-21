@@ -2,12 +2,9 @@ using Dapper;
 
 using Npgsql;
 
-using OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate;
 using OzonEdu.MerchApi.Domain.AggregationModels.SkuPackAggregate;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
 
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,16 +13,16 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
     public class SkuPackRepository : ISkuPackRepository
     {
         private const int TIMEOUT = 5;
-        private readonly IChangeTracker _changeTracker;
+        private readonly IQueryExecutor _queryExecutor;
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
 
-        public SkuPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IChangeTracker changeTracker)
+        public SkuPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IQueryExecutor queryExecutor)
         {
             _dbConnectionFactory = dbConnectionFactory;
-            _changeTracker = changeTracker;
+            _queryExecutor = queryExecutor;
         }
 
-        public async Task<List<SkuPack>> Create(MerchOrder merchOrder, CancellationToken cancellationToken)
+        public async Task<SkuPack> Create(SkuPack skuPack, long merchOrderId, CancellationToken cancellationToken)
         {
             const string sql = @"
                 INSERT INTO sku_pack (
@@ -40,29 +37,25 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                     @Quantity
                 );";
 
-            foreach (SkuPack skuPack in merchOrder.SkuPackCollection)
+            var parameters = new
             {
-                var parameters = new
-                {
-                    MerchOrderId = merchOrder.Id,
-                    SkuId = skuPack.Sku.Value,
-                    Quantity = skuPack.Quantity.Value,
-                };
+                MerchOrderId = merchOrderId,
+                SkuId = skuPack.Sku.Value,
+                Quantity = skuPack.Quantity.Value,
+            };
 
-                CommandDefinition commandDefinition = new(
-                    sql,
-                    parameters: parameters,
-                    commandTimeout: TIMEOUT,
-                    cancellationToken: cancellationToken);
+            CommandDefinition commandDefinition = new(
+                sql,
+                parameters: parameters,
+                commandTimeout: TIMEOUT,
+                cancellationToken: cancellationToken);
 
+            return await _queryExecutor.Execute(skuPack, async () =>
+            {
                 NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
                 long id = await connection.QuerySingleAsync<long>(commandDefinition);
                 skuPack.SetId(id);
-
-                _changeTracker.Track(skuPack);
-            }
-
-            return merchOrder.SkuPackCollection.ToList();
+            });
         }
     }
 }

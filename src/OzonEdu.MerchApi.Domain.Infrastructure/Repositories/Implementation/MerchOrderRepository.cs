@@ -20,13 +20,13 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
     public class MerchOrderRepository : IMerchOrderRepository
     {
         private const int TIMEOUT = 5;
-        private readonly IChangeTracker _changeTracker;
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
+        private readonly IQueryExecutor _queryExecutor;
 
-        public MerchOrderRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IChangeTracker changeTracker)
+        public MerchOrderRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IQueryExecutor queryExecutor)
         {
             _dbConnectionFactory = dbConnectionFactory;
-            _changeTracker = changeTracker;
+            _queryExecutor = queryExecutor;
         }
 
         public async Task<MerchOrder> Create(MerchOrder itemToCreate, CancellationToken cancellationToken)
@@ -70,12 +70,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 cancellationToken: cancellationToken);
 
             NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
-            long id = await connection.QuerySingleAsync<long>(commandDefinition);
-            itemToCreate.SetId(id);
 
-            _changeTracker.Track(itemToCreate);
-
-            return itemToCreate;
+            return await _queryExecutor.Execute(itemToCreate, async () =>
+            {
+                long id = await connection.QuerySingleAsync<long>(commandDefinition);
+                itemToCreate.SetId(id);
+            });
         }
 
         public async Task<List<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken)
@@ -163,26 +163,23 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 commandTimeout: TIMEOUT,
                 cancellationToken: cancellationToken);
 
-            GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
-
-            IEnumerable<Models.MerchOrder> merchOrderModels = reader
-                .Map<Models.MerchOrder, Models.SkuPack, long>
-                (
-                    merchOrder => merchOrder.Id,
-                    skuPack => skuPack.MerchOrderId,
-                    (merchOrder, skuPacks) => merchOrder.SkuPackCollection = skuPacks
-                );
-
-            List<MerchOrder> merchOrders = merchOrderModels
-                .Map(model => ModelsMapper.MerchOrderModelToEntity(model))
-                .ToList();
-
-            if (merchOrders.Count > 0)
+            IEnumerable<MerchOrder> result = await _queryExecutor.Execute(async () =>
             {
-                _changeTracker.Track(merchOrders.First());
-            }
+                GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
 
-            return merchOrders;
+                IEnumerable<Models.MerchOrder> merchOrderModels = reader
+                    .Map<Models.MerchOrder, Models.SkuPack, long>
+                    (
+                        merchOrder => merchOrder.Id,
+                        skuPack => skuPack.MerchOrderId,
+                        (merchOrder, skuPacks) => merchOrder.SkuPackCollection = skuPacks
+                    );
+
+                return merchOrderModels
+                    .Map(model => ModelsMapper.MerchOrderModelToEntity(model));
+            });
+
+            return result.ToList();
         }
     }
 }

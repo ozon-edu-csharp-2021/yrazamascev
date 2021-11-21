@@ -8,12 +8,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
     public class ItemPackRepository : IItemPackRepository
     {
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
-        private readonly IChangeTracker _changeTracker;
+        private readonly IQueryExecutor _queryExecutor;
 
-        public ItemPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IChangeTracker changeTracker)
+        public ItemPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IQueryExecutor queryExecutor)
         {
             _dbConnectionFactory = dbConnectionFactory;
-            _changeTracker = changeTracker;
+            _queryExecutor = queryExecutor;
         }
     }
 }

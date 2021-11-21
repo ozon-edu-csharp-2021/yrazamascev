@@ -76,6 +76,7 @@ namespace OzonEdu.MerchApi
             services.AddScoped<IDbConnectionFactory<NpgsqlConnection>, NpgsqlConnectionFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IChangeTracker, ChangeTracker>();
+            services.AddScoped<IQueryExecutor, QueryExecutor>();
         }
     }
 }

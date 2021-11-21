@@ -19,20 +19,21 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
     public class MerchPackRepository : IMerchPackRepository
     {
         private const int TIMEOUT = 5;
-        private readonly IChangeTracker _changeTracker;
         private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
+        private readonly IQueryExecutor _queryExecutor;
 
-        public MerchPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IChangeTracker changeTracker)
+        public MerchPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IQueryExecutor queryExecutor)
         {
             _dbConnectionFactory = dbConnectionFactory;
-            _changeTracker = changeTracker;
+            _queryExecutor = queryExecutor;
         }
 
         public async Task<MerchPack> FindByType(MerchPackType merchPackType, CancellationToken cancellationToken)
         {
             const string sql = @"
                 SELECT merch_pack.id
-                    ,merch_pack.merch_pack_type_id
+                    ,merch_pack_type.id as pack_type_id
+                    ,merch_pack_type.name as pack_type_name
                 FROM merch_pack
                 JOIN merch_pack_type ON merch_pack_type.id = merch_pack.merch_pack_type_id
                 WHERE merch_pack_type.id = @MerchPackTypeId ;
@@ -59,24 +60,20 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 commandTimeout: TIMEOUT,
                 cancellationToken: cancellationToken);
 
-            GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
-
-            Models.MerchPack merchPackModel = reader
-                .Map<Models.MerchPack, Models.ItemPack, long>
-                (
-                    merchPack => merchPack.Id,
-                    itemPack => itemPack.MerchPackId,
-                    (merchPack, itemPacks) => merchPack.ItemPackCollection = itemPacks
-                ).FirstOrDefault();
-
-            MerchPack merchPack = ModelsMapper.MerchPackModelToEntity(merchPackModel);
-
-            if (merchPack is not null)
+            return await _queryExecutor.Execute(async () =>
             {
-                _changeTracker.Track(merchPack);
-            }
+                GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
 
-            return merchPack;
+                Models.MerchPack merchPackModel = reader
+                    .Map<Models.MerchPack, Models.ItemPack, long>
+                    (
+                        merchPack => merchPack.Id,
+                        itemPack => itemPack.MerchPackId,
+                        (merchPack, itemPacks) => merchPack.ItemPackCollection = itemPacks
+                    ).FirstOrDefault();
+
+                return ModelsMapper.MerchPackModelToEntity(merchPackModel);
+            });
         }
     }
 }

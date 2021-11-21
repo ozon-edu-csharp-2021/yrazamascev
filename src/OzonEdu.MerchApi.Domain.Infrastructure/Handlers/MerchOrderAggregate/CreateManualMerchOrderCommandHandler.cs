@@ -100,7 +100,11 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate
             }
 
             merchOrder = await _merchOrderRepository.Create(merchOrder, cancellationToken);
-            await _skuPackRepository.Create(merchOrder, cancellationToken);
+
+            foreach (SkuPack skuPack in merchOrder.SkuPackCollection)
+            {
+                await _skuPackRepository.Create(skuPack, merchOrder.Id, cancellationToken);
+            }
 
             return merchOrder;
         }
