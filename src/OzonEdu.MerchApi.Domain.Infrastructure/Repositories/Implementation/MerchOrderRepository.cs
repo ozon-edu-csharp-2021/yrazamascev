@@ -82,12 +82,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         {
             const string sql = @"
                 SELECT merch_order.id
-                    ,merch_pack_type.id
-                    ,merch_pack_type.name
-                    ,merch_order_status.id
-                    ,merch_order_status.name
-                    ,merch_request_type.id
-                    ,merch_request_type.name
+                    ,merch_pack_type.id as pack_type_id
+                    ,merch_pack_type.name as pack_type_name
+                    ,merch_order_status.id as status_id
+                    ,merch_order_status.name as status_name
+                    ,merch_request_type.id as request_type_id
+                    ,merch_request_type.name as request_type_name
                     ,merch_order.in_work_at
                     ,merch_order.reserve_at
                     ,merch_order.done_at
@@ -119,12 +119,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
         {
             const string sql = @"
                 SELECT merch_order.id
-                    ,merch_pack_type.id
-                    ,merch_pack_type.name
-                    ,merch_order_status.id
-                    ,merch_order_status.name
-                    ,merch_request_type.id
-                    ,merch_request_type.name
+                    ,merch_pack_type.id as pack_type_id
+                    ,merch_pack_type.name as pack_type_name
+                    ,merch_order_status.id as status_id
+                    ,merch_order_status.name as status_name
+                    ,merch_request_type.id as request_type_id
+                    ,merch_request_type.name as request_type_name
                     ,merch_order.in_work_at
                     ,merch_order.reserve_at
                     ,merch_order.done_at

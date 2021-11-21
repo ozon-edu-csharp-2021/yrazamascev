@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using OzonEdu.MerchApi.HttpModels.ViewModels;
+
+using System.Collections.Generic;
 
 namespace OzonEdu.MerchApi.HttpModels
 {

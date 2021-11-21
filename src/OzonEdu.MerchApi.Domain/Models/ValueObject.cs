@@ -29,7 +29,7 @@ namespace OzonEdu.MerchApi.Domain.Models
                 .Aggregate((x, y) => x ^ y);
         }
 
-        static protected bool EqualOperator(ValueObject left, ValueObject right)
+        protected static bool EqualOperator(ValueObject left, ValueObject right)
         {
             if (left is null ^ right is null)
             {
@@ -39,7 +39,7 @@ namespace OzonEdu.MerchApi.Domain.Models
             return left is null || left.Equals(right);
         }
 
-        static protected bool NotEqualOperator(ValueObject left, ValueObject right)
+        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
         {
             return !EqualOperator(left, right);
         }
