@@ -52,7 +52,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 MerchPackTypeId = merchPackType.Id,
             };
 
-            NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
 
             CommandDefinition commandDefinition = new(
                 sql,
@@ -62,7 +62,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
 
             return await _queryExecutor.Execute(async () =>
             {
-                GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
+                using GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
 
                 Models.MerchPack merchPackModel = reader
                     .Map<Models.MerchPack, Models.ItemPack, long>

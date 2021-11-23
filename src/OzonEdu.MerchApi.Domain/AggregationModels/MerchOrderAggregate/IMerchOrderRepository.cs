@@ -10,8 +10,8 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
     {
         Task<MerchOrder> Create(MerchOrder merchOrder, CancellationToken cancellationToken);
 
-        Task<List<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken);
 
-        Task<List<MerchOrder>> FindIssuedMerch(long employeeId, int merchPackId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyCollection<MerchOrder>> FindIssuedMerch(long employeeId, int merchPackId, CancellationToken cancellationToken = default);
     }
 }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace OzonEdu.MerchApi.Domain.Infrastructure.Commands.GetMerchOrders
 {
-    public class GetMerchOrdersCommand : IRequest<List<MerchOrder>>
+    public class GetMerchOrdersCommand : IRequest<IReadOnlyCollection<MerchOrder>>
     {
         public long EmployeeId { get; set; }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Models
 {
-    public class MerchOrder
+    public sealed class MerchOrder
     {
         public long Id { get; set; }
 

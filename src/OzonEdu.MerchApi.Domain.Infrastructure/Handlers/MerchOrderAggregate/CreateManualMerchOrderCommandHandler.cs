@@ -42,7 +42,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate
 
         public async Task<MerchOrder> Handle(CreateManualMerchOrderCommand request, CancellationToken cancellationToken)
         {
-            List<MerchOrder> merchOrders = await _merchOrderRepository
+            IReadOnlyCollection<MerchOrder> merchOrders = await _merchOrderRepository
                 .FindIssuedMerch(request.EmployeeId, request.MerchPackId, cancellationToken);
 
             if (merchOrders.Count > 0)
@@ -76,6 +76,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate
                 {
                     isEnough = false;
                 }
+
                 skuPacks.Add(new SkuPack(new Sku(stockItem.Sku), itemPack.Quantity));
             }
 

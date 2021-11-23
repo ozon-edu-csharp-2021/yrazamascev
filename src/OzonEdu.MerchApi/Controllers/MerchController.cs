@@ -10,6 +10,7 @@ using OzonEdu.MerchApi.HttpModels.Helpers;
 using OzonEdu.MerchApi.Infrastructure.Extensions;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,10 +32,10 @@ namespace OzonEdu.MerchApi.Controllers
                 EmployeeId = request.EmployeeId
             };
 
-            List<MerchOrder> merchOrders = await _mediator.Send(command, token);
+            IReadOnlyCollection<MerchOrder> merchOrders = await _mediator.Send(command, token);
             GetMerchOrdersResponse response = new()
             {
-                MerchOrders = merchOrders.Map(entity => HttpModelsMapper.MerchOrderToViewModel(entity))
+                MerchOrders = merchOrders.Map(entity => HttpModelsMapper.MerchOrderToViewModel(entity)).ToList()
             };
 
             return Ok(response);

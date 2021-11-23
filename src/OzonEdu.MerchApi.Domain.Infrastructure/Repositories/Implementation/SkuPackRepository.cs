@@ -44,6 +44,8 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 Quantity = skuPack.Quantity.Value,
             };
 
+            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+
             CommandDefinition commandDefinition = new(
                 sql,
                 parameters: parameters,
@@ -52,7 +54,6 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
 
             return await _queryExecutor.Execute(skuPack, async () =>
             {
-                NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
                 long id = await connection.QuerySingleAsync<long>(commandDefinition);
                 skuPack.SetId(id);
             });

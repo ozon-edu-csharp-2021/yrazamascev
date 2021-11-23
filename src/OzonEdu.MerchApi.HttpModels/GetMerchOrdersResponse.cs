@@ -6,6 +6,6 @@ namespace OzonEdu.MerchApi.HttpModels
 {
     public sealed class GetMerchOrdersResponse
     {
-        public IEnumerable<MerchOrderViewModel> MerchOrders { get; set; }
+        public IReadOnlyCollection<MerchOrderViewModel> MerchOrders { get; set; }
     }
 }

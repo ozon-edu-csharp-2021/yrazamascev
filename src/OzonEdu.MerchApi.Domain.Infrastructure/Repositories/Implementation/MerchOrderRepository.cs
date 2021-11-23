@@ -63,13 +63,13 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 itemToCreate.EmployeeId
             };
 
+            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+
             CommandDefinition commandDefinition = new(
                 sql,
                 parameters: parameters,
                 commandTimeout: TIMEOUT,
                 cancellationToken: cancellationToken);
-
-            NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
 
             return await _queryExecutor.Execute(itemToCreate, async () =>
             {
@@ -78,7 +78,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
             });
         }
 
-        public async Task<List<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken)
         {
             const string sql = @"
                 SELECT merch_order.id
@@ -115,7 +115,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
             return await FindMerch(sql, parameters, cancellationToken);
         }
 
-        public async Task<List<MerchOrder>> FindIssuedMerch(long employeeId, int merchPackId, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyCollection<MerchOrder>> FindIssuedMerch(long employeeId, int merchPackId, CancellationToken cancellationToken = default)
         {
             const string sql = @"
                 SELECT merch_order.id
@@ -153,9 +153,9 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
             return await FindMerch(sql, parameters, cancellationToken);
         }
 
-        private async Task<List<MerchOrder>> FindMerch(string sql, object parameters, CancellationToken cancellationToken = default)
+        private async Task<IReadOnlyCollection<MerchOrder>> FindMerch(string sql, object parameters, CancellationToken cancellationToken = default)
         {
-            NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
 
             CommandDefinition commandDefinition = new(
                 sql,
@@ -165,7 +165,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
 
             IEnumerable<MerchOrder> result = await _queryExecutor.Execute(async () =>
             {
-                GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
+                using GridReader reader = await connection.QueryMultipleAsync(commandDefinition);
 
                 IEnumerable<Models.MerchOrder> merchOrderModels = reader
                     .Map<Models.MerchOrder, Models.SkuPack, long>

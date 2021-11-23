@@ -1,6 +1,6 @@
 ﻿namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Models
 {
-    public class ItemPack
+    public sealed class ItemPack
     {
         public long Id { get; set; }
 

@@ -1,6 +1,6 @@
 namespace OzonEdu.MerchApi.Domain.Infrastructure.Configuration
 {
-    public class DatabaseConnectionOptions
+    public sealed class DatabaseConnectionOptions
     {
         public string ConnectionString { get; set; }
     }
