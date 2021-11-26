@@ -1,7 +1,9 @@
-﻿namespace OzonEdu.MerchApi.HttpModels
+﻿using OzonEdu.MerchApi.HttpModels.ViewModels;
+
+namespace OzonEdu.MerchApi.HttpModels
 {
     public sealed class IssueMerchResponse
     {
-        public long MerchOrderId { get; set; }
+        public MerchOrderViewModel MerchOrder { get; set; }
     }
 }

@@ -15,11 +15,15 @@
 
   <ItemGroup>
     <PackageReference Include="CSharpCourse.Core.Lib" Version="1.4.0" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Npgsql" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OzonEdu.MerchApi.Domain\OzonEdu.MerchApi.Domain.csproj" />
     <ProjectReference Include="..\OzonEdu.MerchApi.HttpModels\OzonEdu.MerchApi.HttpModels.csproj" />
+    <ProjectReference Include="..\OzonEdu.MerchApi.Infrastructure\OzonEdu.MerchApi.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

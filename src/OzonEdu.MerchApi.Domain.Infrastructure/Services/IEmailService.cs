@@ -7,4 +7,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Services
     {
         Task<bool> SendMail(long employeeId, CancellationToken cancellationToken);
     }
+
+    public class EmailService : IEmailService
+    {
+        public Task<bool> SendMail(long employeeId, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 }

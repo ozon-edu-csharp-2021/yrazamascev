@@ -4,10 +4,10 @@
     {
         public long Id { get; set; }
 
-        public long Sku { get; init; }
+        public long Sku { get; set; }
 
-        public int? ClothingSize { get; init; }
+        public int? ClothingSize { get; set; }
 
-        public int Quantity { get; init; }
+        public int Quantity { get; set; }
     }
 }

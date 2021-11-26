@@ -1,8 +1,25 @@
+using Dapper;
+
+using MediatR;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using Npgsql;
+
+using OzonEdu.MerchApi.Domain.AggregationModels.ItemPackAggregate;
+using OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate;
+using OzonEdu.MerchApi.Domain.AggregationModels.MerchPackAggregate;
+using OzonEdu.MerchApi.Domain.AggregationModels.SkuPackAggregate;
+using OzonEdu.MerchApi.Domain.Contracts;
+using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
 using OzonEdu.MerchApi.Domain.Infrastructure.Extensions;
+using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation;
+using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure;
+using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
+using OzonEdu.MerchApi.Domain.Infrastructure.Services;
 using OzonEdu.MerchApi.GrpcServices;
 using OzonEdu.MerchApi.Infrastructure.Interceptors;
 using OzonEdu.MerchApi.Services;
@@ -12,13 +29,9 @@ namespace OzonEdu.MerchApi
 {
     public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddSingleton<IMerchService, MerchService>();
-            services.AddInfrastructureServices();
+        public IConfiguration Configuration { get; }
 
-            services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -28,6 +41,42 @@ namespace OzonEdu.MerchApi
                 endpoints.MapGrpcService<MerchApiGrpsService>();
                 endpoints.MapControllers();
             });
+        }
+
+        public void ConfigureServices(IServiceCollection services)
+        {
+            AddMediator(services);
+            AddDatabaseComponents(services);
+            AddRepositories(services);
+
+            services.AddSingleton<IMerchService, MerchService>();
+            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IStockApiService, StockApiService>();
+            services.AddInfrastructureServices();
+            services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
+        }
+
+        static private void AddMediator(IServiceCollection services)
+        {
+            services.AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions));
+        }
+
+        static private void AddRepositories(IServiceCollection services)
+        {
+            DefaultTypeMap.MatchNamesWithUnderscores = true;
+            services.AddScoped<IItemPackRepository, ItemPackRepository>();
+            services.AddScoped<IMerchOrderRepository, MerchOrderRepository>();
+            services.AddScoped<IMerchPackRepository, MerchPackRepository>();
+            services.AddScoped<ISkuPackRepository, SkuPackRepository>();
+        }
+
+        private void AddDatabaseComponents(IServiceCollection services)
+        {
+            services.Configure<DatabaseConnectionOptions>(Configuration.GetSection(nameof(DatabaseConnectionOptions)));
+            services.AddScoped<IDbConnectionFactory<NpgsqlConnection>, NpgsqlConnectionFactory>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IChangeTracker, ChangeTracker>();
+            services.AddScoped<IQueryExecutor, QueryExecutor>();
         }
     }
 }

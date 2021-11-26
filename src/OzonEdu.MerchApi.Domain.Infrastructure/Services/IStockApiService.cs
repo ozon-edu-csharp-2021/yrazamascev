@@ -13,4 +13,17 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Services
 
         Task<bool> Reserve(List<SkuPack> skuPacks, CancellationToken cancellationToken);
     }
+
+    public class StockApiService : IStockApiService
+    {
+        public Task<List<StockItemResponse>> GetAll(CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<bool> Reserve(List<SkuPack> skuPacks, CancellationToken cancellationToken)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 }
