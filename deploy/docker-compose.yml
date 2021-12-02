@@ -3,86 +3,200 @@ version: '3.8'
 services:
     supply-service:
         image: 'ghcr.io/ozon-edu-csharp-2021/supply-service:main'
-        hostname: supply-service
         environment:
             DbConfiguration__ConnectionString: "Host=host.docker.internal;Port=5034;Database=supply-service;Username=postgres;Password=supplyServicePassword"
+            KafkaConfiguration__BootstrapServers: "broker:29092"
         ports:
           - "8034:80"
+        networks:
+          - ozon-network
         depends_on:
           - supply-service-db
+          - zookeeper
+          - broker
 
     employees-service:
         image: 'ghcr.io/ozon-edu-csharp-2021/employees-service:main'
-        hostname: employees-service
+        environment:
+            ConnectionString: "Host=host.docker.internal;Port=5030;Database=employees-service;Username=postgres;Password=employeeServicePassword;"
+            BootstrapServers: "broker:29092"
+            Topic: "employee_notification_event"
         volumes:
-          - ./src:/src
+          - employees-service:/src
         ports:
           - "8030:80"
+        networks:
+          - ozon-network
         depends_on:
           - employees-service-postgres-db
+          - zookeeper
+          - broker
 
     emailing-service:
         image: 'ghcr.io/ozon-edu-csharp-2021/emailing-service:main'
-        hostname: emailing-service
+        environment:
+            KafkaTopics__EmployeeNotificationEventTopic: "employee_notification_event"
+        volumes:
+          - emailing-service:/src
         ports:
           - "8031:80"
+        networks:
+          - ozon-network
+        depends_on:
+          - zookeeper
+          - broker
 
     stock-api:
         image: 'ghcr.io/ozon-edu-csharp-2021/stock-api:main'
-        hostname: stock-api
         environment:
             DatabaseConnectionOptions__ConnectionString: "Host=host.docker.internal;Port=5032;Database=stock-api;Username=postgres;Password=stockApiPassword"
+            BootstrapServers: "broker:29092"
+            topic: "stock_replenished_event"
+            groupId : "stock-api-service"
+            SupplyApiGrpcServiceConfiguration__ServerAddress: "http://supply-service:8034"
         ports:
           - "8032:80"
+        networks:
+          - ozon-network
         depends_on:
           - supply-service
           - stock-api-db
+          - redis
+          - zookeeper
+          - broker
 
     merch-api:
         build: '..'
-        hostname: merch-api
         environment:
             DatabaseConnectionOptions__ConnectionString: "Host=host.docker.internal;Port=5033;Database=merch-api;Username=postgres;Password=merchApiPassword"
+            BootstrapServers: "broker:29092"
+            groupId : "merch-api-service"
+            EmployeeTopic: "employee_notification_event"
+            StockTopic: "stock_replenished_event"
         ports:
           - "8033:80"
+        networks:
+          - ozon-network
         depends_on:
           - stock-api
           - merch-api-db
+          - zookeeper
+          - broker
 
     supply-service-db:
         image: postgres:latest
-        ports:
-         - "5034:5432"
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: supplyServicePassword
             POSTGRES_DB: supply-service
+        volumes:
+          - supply-service-db:/var/lib/postgresql/data
+        ports:
+          - "5034:5432"
+        networks:
+          - ozon-network
+        command: "-c log_statement=all"
 
     employees-service-db:
         image: postgres:latest
-        ports:
-         - "5030:5432"
         environment:
             POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: postgres
+            POSTGRES_PASSWORD: employeeServicePassword
             POSTGRES_DB: employees-service
         volumes:
-         - ./db/employees-service-postgres-db/dbdata:/var/lib/postgresql/data"
+          - employees-service-db:/var/lib/postgresql/data
+        ports:
+          - "5030:5432"
+        networks:
+          - ozon-network
+        command: "-c log_statement=all"
 
     stock-api-db:
         image: postgres:latest
-        ports:
-         - "5032:5432"
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: stockApiPassword
             POSTGRES_DB: stock-api
+        volumes:
+          - stock-api-db:/var/lib/postgresql/data
+        ports:
+          - "5032:5432"
+        networks:
+          - ozon-network
+        command: "-c log_statement=all"
 
     merch-api-db:
         image: postgres:latest
-        ports:
-         - "5033:5432"
         environment:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: merchApiPassword
             POSTGRES_DB: merch-api
+        ports:
+          - "5033:5432"
+        networks:
+          - ozon-network
+        command: "-c log_statement=all"
+
+    zookeeper:
+        image: confluentinc/cp-zookeeper:6.2.0
+        hostname: zookeeper
+        container_name: zookeeper
+        environment:
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
+        networks:
+          - ozon-network
+
+    broker:
+        image: confluentinc/cp-kafka:6.2.0
+        container_name: broker
+        ports:
+          - "9092:9092"
+        depends_on:
+          - zookeeper
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+            KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+        networks:
+          - ozon-network
+
+    redis:
+        image: redis
+        ports:
+          - "6379:6379"
+        networks:
+          - ozon-network
+        hostname: redis
+
+    jaeger:
+        image: jaegertracing/all-in-one
+        ports:
+          - "6831:6831/udp"
+          - "16686:16686"
+        networks:
+          - ozon-network
+
+networks:
+    ozon-network:
+        driver: bridge
+
+volumes:
+    ozon-volume:
+        driver: local
+    employees-service:
+        driver: local
+    emailing-service:
+        driver: local
+    stock-api-db:
+        driver: local
+    merch-api-db:
+        driver: local
+    supply-service-db:
+        driver: local
+    employees-service-db:
+        driver: local

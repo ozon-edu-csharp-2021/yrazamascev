@@ -1,8 +1,11 @@
 using Dapper;
 
+using Microsoft.Extensions.Options;
+
 using Npgsql;
 
 using OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate;
+using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Extension;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Helpers;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
@@ -20,12 +23,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
     public class MerchOrderRepository : IMerchOrderRepository
     {
         private const int TIMEOUT = 5;
-        private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
+        private readonly DatabaseConnectionOptions _options;
         private readonly IQueryExecutor _queryExecutor;
 
-        public MerchOrderRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IQueryExecutor queryExecutor)
+        public MerchOrderRepository(IOptions<DatabaseConnectionOptions> options, IQueryExecutor queryExecutor)
         {
-            _dbConnectionFactory = dbConnectionFactory;
+            _options = options.Value;
             _queryExecutor = queryExecutor;
         }
 
@@ -60,10 +63,11 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 InWorkAt = itemToCreate.InWorkAt.Value,
                 ReserveAt = itemToCreate.ReserveAt.Value,
                 DoneAt = itemToCreate.DoneAt.Value,
-                itemToCreate.EmployeeId
+                EmployeeId = itemToCreate.EmployeeId
             };
 
-            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+            using NpgsqlConnection connection = new(_options.ConnectionString);
+            await connection.OpenAsync(cancellationToken);
 
             CommandDefinition commandDefinition = new(
                 sql,
@@ -155,7 +159,8 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
 
         private async Task<IReadOnlyCollection<MerchOrder>> FindMerch(string sql, object parameters, CancellationToken cancellationToken = default)
         {
-            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+            using NpgsqlConnection connection = new(_options.ConnectionString);
+            await connection.OpenAsync(cancellationToken);
 
             CommandDefinition commandDefinition = new(
                 sql,

@@ -1,13 +1,22 @@
 using Dapper;
 
+using Jaeger;
+using Jaeger.Reporters;
+using Jaeger.Samplers;
+using Jaeger.Senders.Thrift;
+
 using MediatR;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 using Npgsql;
+
+using OpenTracing;
+using OpenTracing.Contrib.NetCore.Configuration;
 
 using OzonEdu.MerchApi.Domain.AggregationModels.ItemPackAggregate;
 using OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate;
@@ -20,6 +29,7 @@ using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
 using OzonEdu.MerchApi.Domain.Infrastructure.Services;
+using OzonEdu.MerchApi.Extensions;
 using OzonEdu.MerchApi.GrpcServices;
 using OzonEdu.MerchApi.Infrastructure.Interceptors;
 using OzonEdu.MerchApi.Services;
@@ -45,6 +55,9 @@ namespace OzonEdu.MerchApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCustomOptions(Configuration);
+            services.AddHostedServices();
+
             AddMediator(services);
             AddDatabaseComponents(services);
             AddRepositories(services);
@@ -54,6 +67,29 @@ namespace OzonEdu.MerchApi
             services.AddSingleton<IStockApiService, StockApiService>();
             services.AddInfrastructureServices();
             services.AddGrpc(options => options.Interceptors.Add<LoggingInterceptor>());
+
+            services.AddSingleton<ITracer>(sp =>
+            {
+                string serviceName = sp.GetRequiredService<IWebHostEnvironment>().ApplicationName;
+                ILoggerFactory loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+
+                RemoteReporter reporter = new RemoteReporter
+                    .Builder()
+                    .WithLoggerFactory(loggerFactory)
+                    .WithSender(new UdpSender())
+                    .Build();
+
+                Tracer tracer = new Tracer.Builder(serviceName)
+                    .WithSampler(new ConstSampler(true))
+                    .WithReporter(reporter)
+                    .Build();
+
+                return tracer;
+            });
+
+            services.Configure<HttpHandlerDiagnosticOptions>(options =>
+                options.OperationNameResolver =
+                    request => $"{request.Method.Method}: {request?.RequestUri?.AbsoluteUri}");
         }
 
         static private void AddMediator(IServiceCollection services)

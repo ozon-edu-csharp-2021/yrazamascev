@@ -1,9 +1,12 @@
 using Dapper;
 
+using Microsoft.Extensions.Options;
+
 using Npgsql;
 
 using OzonEdu.MerchApi.Domain.AggregationModels.Enumerations;
 using OzonEdu.MerchApi.Domain.AggregationModels.MerchPackAggregate;
+using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Extension;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Helpers;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
@@ -19,12 +22,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
     public class MerchPackRepository : IMerchPackRepository
     {
         private const int TIMEOUT = 5;
-        private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
+        private readonly DatabaseConnectionOptions _options;
         private readonly IQueryExecutor _queryExecutor;
 
-        public MerchPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IQueryExecutor queryExecutor)
+        public MerchPackRepository(IOptions<DatabaseConnectionOptions> options, IQueryExecutor queryExecutor)
         {
-            _dbConnectionFactory = dbConnectionFactory;
+            _options = options.Value;
             _queryExecutor = queryExecutor;
         }
 
@@ -52,7 +55,8 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 MerchPackTypeId = merchPackType.Id,
             };
 
-            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+            using NpgsqlConnection connection = new(_options.ConnectionString);
+            await connection.OpenAsync(cancellationToken);
 
             CommandDefinition commandDefinition = new(
                 sql,
