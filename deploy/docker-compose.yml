@@ -1,13 +1,15 @@
 version: '3.8'
 
 services:
+
     supply-service:
         image: 'ghcr.io/ozon-edu-csharp-2021/supply-service:main'
         environment:
-            DbConfiguration__ConnectionString: "Host=host.docker.internal;Port=5034;Database=supply-service;Username=postgres;Password=supplyServicePassword"
+            DbConfiguration__ConnectionString: "Host=supply-service-db;Port=5432;Database=supply-service;Username=postgres;Password=supplyServicePassword"
             KafkaConfiguration__BootstrapServers: "broker:29092"
         ports:
           - "8034:80"
+          - "8234:82"
         networks:
           - ozon-network
         depends_on:
@@ -18,7 +20,7 @@ services:
     employees-service:
         image: 'ghcr.io/ozon-edu-csharp-2021/employees-service:main'
         environment:
-            ConnectionString: "Host=host.docker.internal;Port=5030;Database=employees-service;Username=postgres;Password=employeeServicePassword;"
+            ConnectionString: "Host=employees-service-db;Port=5432;Database=employees-service;Username=postgres;Password=employeeServicePassword"
             BootstrapServers: "broker:29092"
             Topic: "employee_notification_event"
         volumes:
@@ -28,7 +30,7 @@ services:
         networks:
           - ozon-network
         depends_on:
-          - employees-service-postgres-db
+          - employees-service-db
           - zookeeper
           - broker
 
@@ -49,13 +51,14 @@ services:
     stock-api:
         image: 'ghcr.io/ozon-edu-csharp-2021/stock-api:main'
         environment:
-            DatabaseConnectionOptions__ConnectionString: "Host=host.docker.internal;Port=5032;Database=stock-api;Username=postgres;Password=stockApiPassword"
+            DatabaseConnectionOptions__ConnectionString: "Host=stock-api-db;Port=5432;Database=stock-api;Username=postgres;Password=stockApiPassword"
             BootstrapServers: "broker:29092"
             topic: "stock_replenished_event"
             groupId : "stock-api-service"
-            SupplyApiGrpcServiceConfiguration__ServerAddress: "http://supply-service:8034"
+            SupplyApiGrpcServiceConfiguration__ServerAddress: "http://supply-service:8234"
         ports:
           - "8032:80"
+          - "8232:82"
         networks:
           - ozon-network
         depends_on:
@@ -68,11 +71,12 @@ services:
     merch-api:
         build: '..'
         environment:
-            DatabaseConnectionOptions__ConnectionString: "Host=host.docker.internal;Port=5033;Database=merch-api;Username=postgres;Password=merchApiPassword"
+            DatabaseConnectionOptions__ConnectionString: "Host=merch-api-db;Port=5432;Database=merch-api;Username=postgres;Password=merchApiPassword"
             BootstrapServers: "broker:29092"
             groupId : "merch-api-service"
             EmployeeTopic: "employee_notification_event"
             StockTopic: "stock_replenished_event"
+            StockApiGrpcServiceConfiguration__ServerAddress: "http://stock-api:8232"
         ports:
           - "8033:80"
         networks:
@@ -131,6 +135,8 @@ services:
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: merchApiPassword
             POSTGRES_DB: merch-api
+        volumes:
+          - merch-api-db:/var/lib/postgresql/data
         ports:
           - "5033:5432"
         networks:
@@ -138,7 +144,7 @@ services:
         command: "-c log_statement=all"
 
     zookeeper:
-        image: confluentinc/cp-zookeeper:6.2.0
+        image: confluentinc/cp-zookeeper:latest
         hostname: zookeeper
         container_name: zookeeper
         environment:
@@ -148,7 +154,7 @@ services:
           - ozon-network
 
     broker:
-        image: confluentinc/cp-kafka:6.2.0
+        image: confluentinc/cp-kafka:latest
         container_name: broker
         ports:
           - "9092:9092"
@@ -156,7 +162,7 @@ services:
           - zookeeper
         environment:
             KAFKA_BROKER_ID: 1
-            KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
             KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
             KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
             KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1

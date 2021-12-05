@@ -13,8 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Npgsql;
-
 using OpenTracing;
 using OpenTracing.Contrib.NetCore.Configuration;
 
@@ -92,12 +90,12 @@ namespace OzonEdu.MerchApi
                     request => $"{request.Method.Method}: {request?.RequestUri?.AbsoluteUri}");
         }
 
-        static private void AddMediator(IServiceCollection services)
+        private static void AddMediator(IServiceCollection services)
         {
             services.AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions));
         }
 
-        static private void AddRepositories(IServiceCollection services)
+        private static void AddRepositories(IServiceCollection services)
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
             services.AddScoped<IItemPackRepository, ItemPackRepository>();
@@ -109,7 +107,6 @@ namespace OzonEdu.MerchApi
         private void AddDatabaseComponents(IServiceCollection services)
         {
             services.Configure<DatabaseConnectionOptions>(Configuration.GetSection(nameof(DatabaseConnectionOptions)));
-            services.AddScoped<IDbConnectionFactory<NpgsqlConnection>, NpgsqlConnectionFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IChangeTracker, ChangeTracker>();
             services.AddScoped<IQueryExecutor, QueryExecutor>();
