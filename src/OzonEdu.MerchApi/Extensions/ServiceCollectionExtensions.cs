@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MediatR;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
@@ -8,9 +9,9 @@ namespace OzonEdu.MerchApi.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCustomOptions(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddMediator(this IServiceCollection services)
         {
-            services.Configure<KafkaConfiguration>(configuration);
+            services.AddMediatR(typeof(Startup), typeof(DatabaseConnectionOptions));
 
             return services;
         }
@@ -21,13 +22,5 @@ namespace OzonEdu.MerchApi.Extensions
 
             return services;
         }
-
-        //public static IServiceCollection AddExternalServices(this IServiceCollection services,
-        //    IConfiguration configuration)
-        //{
-        //    services.AddSupplGrpcServiceClient(configuration);
-
-        //    return services;
-        //}
     }
 }

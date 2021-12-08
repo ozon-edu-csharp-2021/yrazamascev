@@ -10,6 +10,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.MessageBroker
 {
     public class ProducerBuilderWrapper : IProducerBuilderWrapper
     {
+        public string EmployeeIssueMerchTopic { get; set; }
         public IProducer<string, string> Producer { get; set; }
         public string StockReshippedTopic { get; set; }
 
@@ -27,7 +28,8 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.MessageBroker
             };
 
             Producer = new ProducerBuilder<string, string>(producerConfig).Build();
-            //StockReshippedTopic = configValue.Topic;
+            StockReshippedTopic = configValue.StockTopic;
+            EmployeeIssueMerchTopic = configValue.EmployeeTopic;
         }
     }
 }
