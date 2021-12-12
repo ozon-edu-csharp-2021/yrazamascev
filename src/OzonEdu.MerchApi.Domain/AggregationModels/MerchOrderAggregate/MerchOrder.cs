@@ -1,6 +1,7 @@
 ﻿using OzonEdu.MerchApi.Domain.AggregationModels.Enumerations;
 using OzonEdu.MerchApi.Domain.AggregationModels.SkuPackAggregate;
 using OzonEdu.MerchApi.Domain.AggregationModels.ValueObjects;
+using OzonEdu.MerchApi.Domain.Events;
 using OzonEdu.MerchApi.Domain.Models;
 
 using System;
@@ -18,11 +19,9 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
 
         public DateAt InWorkAt { get; }
 
-        public DateAt ReserveAt { get; private set; }
-
         public DateAt DoneAt { get; private set; }
 
-        public long EmployeeId { get; }
+        public string EmployeeEmail { get; }
 
         public IReadOnlyList<SkuPack> SkuPackCollection { get; }
 
@@ -32,9 +31,8 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
             MerchOrderStatus status,
             MerchRequestType requestType,
             DateAt inWorkAt,
-            DateAt reserveAt,
             DateAt doneAt,
-            long employeeId,
+            string employeeEmail,
             IReadOnlyList<SkuPack> skuPackCollection)
         {
             Id = id;
@@ -42,23 +40,22 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
             Status = status;
             RequestType = requestType;
             InWorkAt = inWorkAt;
-            ReserveAt = reserveAt;
             DoneAt = doneAt;
-            EmployeeId = employeeId;
+            EmployeeEmail = employeeEmail;
             SkuPackCollection = skuPackCollection;
         }
 
         public MerchOrder(
             MerchPackType packType,
             MerchRequestType requestType,
-            long employeeId,
+            string employeeEmail,
             IReadOnlyList<SkuPack> skuPackCollection)
         {
             PackType = packType;
             Status = MerchOrderStatus.InWork;
             RequestType = requestType;
             InWorkAt = new DateAt(DateTimeOffset.UtcNow);
-            EmployeeId = employeeId;
+            EmployeeEmail = employeeEmail;
             SkuPackCollection = skuPackCollection;
         }
 
@@ -71,21 +68,11 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
 
             DoneAt = new DateAt(DateTimeOffset.UtcNow);
             Status = MerchOrderStatus.IsDone;
-        }
 
-        public void Reserve()
-        {
-            if (Status.Equals(MerchOrderStatus.IsReserved))
+            AddDomainEvent(new EmployeeIssueMerchEvent()
             {
-                throw new MerchOrderStatusException($"Order in reserve. Change status unavailable");
-            }
-            if (Status.Equals(MerchOrderStatus.IsDone))
-            {
-                throw new MerchOrderStatusException($"Order in done. Change status unavailable");
-            }
-
-            ReserveAt = new DateAt(DateTimeOffset.UtcNow);
-            Status = MerchOrderStatus.IsReserved;
+                EmployeeEmail = EmployeeEmail
+            });
         }
     }
 }

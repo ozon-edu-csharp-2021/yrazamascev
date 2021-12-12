@@ -33,12 +33,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                     ,sku_id
                     ,quantity
                 )
-                OUTPUT INSERTED.Id
                 VALUES (
                     @MerchOrder_id
                     @Sku_id
                     @Quantity
-                );";
+                )
+                RETURNING sku_pack.id ;";
 
             var parameters = new
             {

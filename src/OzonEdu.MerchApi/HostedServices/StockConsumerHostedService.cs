@@ -9,25 +9,27 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using OzonEdu.MerchApi.Domain.Infrastructure.Commands;
 using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
 
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace OzonEdu.StockApi.HostedServices
 {
-    public class SupplyConsumerHostedService : BackgroundService
+    public class StockConsumerHostedService : BackgroundService
     {
         private readonly KafkaConfiguration _config;
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly ILogger<SupplyConsumerHostedService> _logger;
+        private readonly ILogger<StockConsumerHostedService> _logger;
 
-        public SupplyConsumerHostedService(
+        public StockConsumerHostedService(
             IOptions<KafkaConfiguration> config,
             IServiceScopeFactory scopeFactory,
-            ILogger<SupplyConsumerHostedService> logger)
+            ILogger<StockConsumerHostedService> logger)
         {
             _config = config.Value;
             _scopeFactory = scopeFactory;
@@ -42,13 +44,12 @@ namespace OzonEdu.StockApi.HostedServices
                 BootstrapServers = _config.BootstrapServers,
             };
 
-            using IConsumer<Ignore, string> c = new ConsumerBuilder<Ignore, string>(config).Build();
-            //c.Subscribe(_config.StockTopic);
-            c.Subscribe(_config.EmployeeTopic);
+            using IConsumer<Ignore, string> consumer = new ConsumerBuilder<Ignore, string>(config).Build();
+            consumer.Subscribe(_config.StockTopic);
 
             try
             {
-                while (!stoppingToken.IsCancellationRequested)
+                while (stoppingToken.IsCancellationRequested == false)
                 {
                     using IServiceScope scope = _scopeFactory.CreateScope();
 
@@ -57,21 +58,16 @@ namespace OzonEdu.StockApi.HostedServices
                         await Task.Yield();
                         IMediator mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-                        ConsumeResult<Ignore, string> cr = c.Consume(stoppingToken);
+                        ConsumeResult<Ignore, string> result = consumer.Consume(stoppingToken);
 
-                        if (cr is not null)
+                        if (result is not null)
                         {
-                            SupplyShippedEvent message = JsonSerializer.Deserialize<SupplyShippedEvent>(cr.Message.Value);
+                            StockReplenishedEvent message = JsonSerializer.Deserialize<StockReplenishedEvent>(result.Message.Value);
 
-                            //await mediator.Send(new ReplenishStockCommand()
-                            //{
-                            //    SupplyId = message.SupplyId,
-                            //    Items = message.Items.Select(it => new StockItemQuantityDto()
-                            //    {
-                            //        Quantity = (int)it.Quantity,
-                            //        Sku = it.SkuId
-                            //    }).ToArray()
-                            //}, stoppingToken);
+                            await mediator.Send(new RestockingCommand()
+                            {
+                                Skus = message.Type.Select(t => t.Sku).ToList()
+                            }, stoppingToken);
                         }
                     }
                     catch (Exception ex)
@@ -82,8 +78,8 @@ namespace OzonEdu.StockApi.HostedServices
             }
             finally
             {
-                c.Commit();
-                c.Close();
+                consumer.Commit();
+                consumer.Close();
             }
         }
     }

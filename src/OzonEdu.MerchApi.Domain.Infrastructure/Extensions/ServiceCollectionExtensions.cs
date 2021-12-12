@@ -13,7 +13,7 @@ using OzonEdu.MerchApi.Domain.AggregationModels.MerchPackAggregate;
 using OzonEdu.MerchApi.Domain.AggregationModels.SkuPackAggregate;
 using OzonEdu.MerchApi.Domain.Contracts;
 using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
-using OzonEdu.MerchApi.Domain.Infrastructure.Handlers.MerchOrderAggregate;
+using OzonEdu.MerchApi.Domain.Infrastructure.Handlers.DomainEvent;
 using OzonEdu.MerchApi.Domain.Infrastructure.MessageBroker;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure;
@@ -71,7 +71,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Extensions
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddMediatR(
-                typeof(CreateManualMerchOrderCommandHandler).Assembly,
+                typeof(CreateMerchOrderCommandHandler).Assembly,
                 typeof(GetMerchOrdersCommandHandler).Assembly);
 
             return services;

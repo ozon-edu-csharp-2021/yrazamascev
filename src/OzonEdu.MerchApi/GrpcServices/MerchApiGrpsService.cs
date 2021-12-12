@@ -15,22 +15,22 @@ namespace OzonEdu.MerchApi.GrpcServices
 
         public override async Task<CheckWasIssuedMerchResponse> CheckWasIssuedMerch(CheckWasIssuedMerchRequest request, ServerCallContext context)
         {
-            bool response = await _service.GetMerchOrders(request.EmployeeId, context.CancellationToken);
+            bool response = await _service.GetMerchOrders(request.EmployeeEmail, context.CancellationToken);
 
             return new CheckWasIssuedMerchResponse()
             {
-                EmployeeId = request.EmployeeId,
+                EmployeeEmail = request.EmployeeEmail,
                 WasIssued = response
             };
         }
 
         public override async Task<IssueMerchResponse> IssueMerch(IssueMerchRequest request, ServerCallContext context)
         {
-            bool response = await _service.IssueMerch(request.EmployeeId, context.CancellationToken);
+            bool response = await _service.IssueMerch(request.EmployeeEmail, context.CancellationToken);
 
             return new IssueMerchResponse()
             {
-                EmployeeId = request.EmployeeId
+                EmployeeEmail = request.EmployeeEmail
             };
         }
     }

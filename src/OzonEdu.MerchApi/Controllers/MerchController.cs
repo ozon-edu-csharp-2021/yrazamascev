@@ -3,8 +3,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate;
-using OzonEdu.MerchApi.Domain.Infrastructure.Commands.CreateMerchOrder;
-using OzonEdu.MerchApi.Domain.Infrastructure.Commands.GetMerchOrders;
+using OzonEdu.MerchApi.Domain.Infrastructure.Commands;
 using OzonEdu.MerchApi.HttpModels;
 using OzonEdu.MerchApi.HttpModels.Helpers;
 using OzonEdu.MerchApi.Infrastructure.Extensions;
@@ -29,7 +28,7 @@ namespace OzonEdu.MerchApi.Controllers
         {
             GetMerchOrdersCommand command = new()
             {
-                EmployeeId = request.EmployeeId
+                EmployeeEmail = request.EmployeeEmail
             };
 
             IReadOnlyCollection<MerchOrder> merchOrders = await _mediator.Send(command, token);
@@ -44,11 +43,12 @@ namespace OzonEdu.MerchApi.Controllers
         [HttpPost("issue-merch")]
         public async Task<ActionResult<IssueMerchResponse>> IssueMerch(IssueMerchRequest request, CancellationToken token)
         {
-            CreateManualMerchOrderCommand command = new()
+            CreateMerchOrderCommand command = new()
             {
-                EmployeeId = request.EmployeeId,
+                EmployeeEmail = request.EmployeeEmail,
                 ClothingSize = request.ClothingSize,
-                MerchPackId = request.MerchPackId,
+                MerchType = request.MerchType,
+                MerchRequestType = MerchRequestType.Manual
             };
 
             MerchOrder merchOrder = await _mediator.Send(command, token);

@@ -18,7 +18,7 @@ namespace OzonEdu.MerchApi.Extensions
 
         public static IServiceCollection AddHostedServices(this IServiceCollection services)
         {
-            services.AddHostedService<SupplyConsumerHostedService>();
+            services.AddHostedService<StockConsumerHostedService>();
 
             return services;
         }

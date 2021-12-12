@@ -14,9 +14,8 @@ namespace OzonEdu.MerchApi.Migrator.Migrations
 	                merch_order_status_id INT NOT NULL,
 	                merch_request_type_id INT NOT NULL,
 	                in_work_at TIMESTAMPTZ NOT NULL,
-	                reserve_at TIMESTAMPTZ NULL,
 	                done_at TIMESTAMPTZ NULL,
-	                employee_id BIGSERIAL NOT NULL,
+	                employee_email TEXT NOT NULL,
                     CONSTRAINT ""PK_merch_order"" PRIMARY KEY (id));");
         }
 

@@ -17,9 +17,8 @@ namespace OzonEdu.MerchApi.HttpModels.Helpers
                 Status = EnumerationToViewModel(merchOrder.Status),
                 RequestType = EnumerationToViewModel(merchOrder.RequestType),
                 InWorkAt = merchOrder.InWorkAt.Value,
-                ReserveAt = merchOrder.ReserveAt?.Value,
                 DoneAt = merchOrder.DoneAt?.Value,
-                EmployeeId = merchOrder.EmployeeId,
+                EmployeeEmail = merchOrder.EmployeeEmail,
                 SkuPackCollection = merchOrder.SkuPackCollection.Map(sp => SkuPackToViewModel(sp)),
             };
         }
