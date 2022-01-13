@@ -1,8 +1,11 @@
 using MediatR;
 
+using Microsoft.Extensions.Options;
+
 using Npgsql;
 
 using OzonEdu.MerchApi.Domain.Contracts;
+using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Exceptions;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
 
@@ -17,16 +20,16 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IChangeTracker _changeTracker;
-        private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory = null;
+        private readonly DatabaseConnectionOptions _options;
         private readonly IPublisher _publisher;
         private NpgsqlTransaction _npgsqlTransaction;
 
         public UnitOfWork(
-            IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory,
+            IOptions<DatabaseConnectionOptions> options,
             IPublisher publisher,
             IChangeTracker changeTracker)
         {
-            _dbConnectionFactory = dbConnectionFactory;
+            _options = options.Value; ;
             _publisher = publisher;
             _changeTracker = changeTracker;
         }
@@ -34,7 +37,6 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure
         void IDisposable.Dispose()
         {
             _npgsqlTransaction?.Dispose();
-            _dbConnectionFactory?.Dispose();
         }
 
         public async Task SaveChanges(CancellationToken token)
@@ -44,7 +46,7 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure
                 throw new NoActiveTransactionStartedException();
             }
 
-            Queue<INotification> domainEvents = new Queue<INotification>(
+            Queue<INotification> domainEvents = new(
                 _changeTracker.TrackedEntities
                     .SelectMany(x =>
                     {
@@ -69,7 +71,8 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure
                 return;
             }
 
-            NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(token);
+            using NpgsqlConnection connection = new(_options.ConnectionString);
+            await connection.OpenAsync(token);
             _npgsqlTransaction = await connection.BeginTransactionAsync(token);
         }
     }

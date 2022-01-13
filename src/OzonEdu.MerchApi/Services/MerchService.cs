@@ -7,12 +7,12 @@ namespace OzonEdu.MerchApi.Services
 {
     public class MerchService : IMerchService
     {
-        public async Task<bool> GetMerchOrders(long employeeId, CancellationToken token)
+        public async Task<bool> GetMerchOrders(string employeeEmail, CancellationToken token)
         {
             return true;
         }
 
-        public async Task<bool> IssueMerch(long employeeId, CancellationToken token)
+        public async Task<bool> IssueMerch(string employeeEmail, CancellationToken token)
         {
             return true;
         }

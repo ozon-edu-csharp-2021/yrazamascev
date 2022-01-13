@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 
 using OzonEdu.MerchApi.Infrastructure.Extensions;
 
+using Serilog;
+
 namespace OzonEdu.MerchApi
 {
     public class Program
@@ -15,6 +17,10 @@ namespace OzonEdu.MerchApi
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
+                .UseSerilog((context, configuration) => configuration
+                    .ReadFrom
+                    .Configuration(context.Configuration)
+                    .WriteTo.Console())
                 .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
                 .AddInfrastructure();
         }

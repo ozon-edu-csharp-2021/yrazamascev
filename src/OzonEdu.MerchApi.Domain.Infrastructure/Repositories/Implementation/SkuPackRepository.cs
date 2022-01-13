@@ -1,8 +1,11 @@
 using Dapper;
 
+using Microsoft.Extensions.Options;
+
 using Npgsql;
 
 using OzonEdu.MerchApi.Domain.AggregationModels.SkuPackAggregate;
+using OzonEdu.MerchApi.Domain.Infrastructure.Configuration;
 using OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Infrastructure.Interfaces;
 
 using System.Threading;
@@ -13,12 +16,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
     public class SkuPackRepository : ISkuPackRepository
     {
         private const int TIMEOUT = 5;
+        private readonly DatabaseConnectionOptions _options;
         private readonly IQueryExecutor _queryExecutor;
-        private readonly IDbConnectionFactory<NpgsqlConnection> _dbConnectionFactory;
 
-        public SkuPackRepository(IDbConnectionFactory<NpgsqlConnection> dbConnectionFactory, IQueryExecutor queryExecutor)
+        public SkuPackRepository(IOptions<DatabaseConnectionOptions> options, IQueryExecutor queryExecutor)
         {
-            _dbConnectionFactory = dbConnectionFactory;
+            _options = options.Value;
             _queryExecutor = queryExecutor;
         }
 
@@ -30,12 +33,12 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                     ,sku_id
                     ,quantity
                 )
-                OUTPUT INSERTED.Id
                 VALUES (
                     @MerchOrder_id
                     @Sku_id
                     @Quantity
-                );";
+                )
+                RETURNING sku_pack.id ;";
 
             var parameters = new
             {
@@ -44,7 +47,8 @@ namespace OzonEdu.MerchApi.Domain.Infrastructure.Repositories.Implementation
                 Quantity = skuPack.Quantity.Value,
             };
 
-            using NpgsqlConnection connection = await _dbConnectionFactory.CreateConnection(cancellationToken);
+            using NpgsqlConnection connection = new(_options.ConnectionString);
+            await connection.OpenAsync(cancellationToken);
 
             CommandDefinition commandDefinition = new(
                 sql,

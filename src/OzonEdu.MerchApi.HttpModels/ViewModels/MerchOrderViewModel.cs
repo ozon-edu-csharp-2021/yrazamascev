@@ -15,11 +15,9 @@ namespace OzonEdu.MerchApi.HttpModels.ViewModels
 
         public DateTimeOffset InWorkAt { get; set; }
 
-        public DateTimeOffset? ReserveAt { get; set; }
-
         public DateTimeOffset? DoneAt { get; set; }
 
-        public long EmployeeId { get; set; }
+        public string EmployeeEmail { get; set; }
 
         public IEnumerable<SkuPackViewModel> SkuPackCollection { get; set; }
     }

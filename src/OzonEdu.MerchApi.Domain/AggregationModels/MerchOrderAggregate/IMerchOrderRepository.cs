@@ -1,4 +1,6 @@
-﻿using OzonEdu.MerchApi.Domain.Contracts;
+﻿using CSharpCourse.Core.Lib.Enums;
+
+using OzonEdu.MerchApi.Domain.Contracts;
 
 using System.Collections.Generic;
 using System.Threading;
@@ -10,8 +12,12 @@ namespace OzonEdu.MerchApi.Domain.AggregationModels.MerchOrderAggregate
     {
         Task<MerchOrder> Create(MerchOrder merchOrder, CancellationToken cancellationToken);
 
-        Task<IReadOnlyCollection<MerchOrder>> FindByEmployeeId(long employeeId, CancellationToken cancellationToken);
+        Task<MerchOrder> Update(MerchOrder itemToUpdate, CancellationToken cancellationToken);
 
-        Task<IReadOnlyCollection<MerchOrder>> FindIssuedMerch(long employeeId, int merchPackId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyCollection<MerchOrder>> FindByEmployeeId(string employeeEmail, CancellationToken cancellationToken);
+
+        Task<IReadOnlyCollection<MerchOrder>> FindIssuedMerch(string employeeEmail, MerchType merchType, CancellationToken cancellationToken);
+
+        Task<IReadOnlyCollection<MerchOrder>> FindInWork(IReadOnlyCollection<long> skus, CancellationToken cancellationToken);
     }
 }

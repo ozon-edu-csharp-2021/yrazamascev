@@ -14,18 +14,18 @@ service MerchApiGrpc
 
 
 message CheckWasIssuedMerchRequest {
-int64 employee_id = 1;
+string employee_email = 1;
 }
 
 message CheckWasIssuedMerchResponse {
-int64 employee_id = 1;
+string employee_email = 1;
 bool was_issued = 2;
 }
 
 message IssueMerchRequest {
-int64 employee_id = 1;
+string employee_email = 1;
 }
 
 message IssueMerchResponse {
-int64 employee_id = 1;
+string employee_email = 1;
 }

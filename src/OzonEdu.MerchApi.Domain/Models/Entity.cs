@@ -7,7 +7,7 @@ namespace OzonEdu.MerchApi.Domain.Models
 {
     public abstract class Entity
     {
-        private List<INotification> _domainEvents;
+        private readonly List<INotification> _domainEvents = new();
         private int? _requestedHashCode;
         public IReadOnlyCollection<INotification> DomainEvents => _domainEvents?.AsReadOnly();
         public virtual long Id { get; protected set; }
@@ -18,7 +18,7 @@ namespace OzonEdu.MerchApi.Domain.Models
         {
             if (Equals(left, null))
             {
-                return Equals(right, null) ? true : false;
+                return Equals(right, null);
             }
             else
             {
@@ -28,7 +28,6 @@ namespace OzonEdu.MerchApi.Domain.Models
 
         public void AddDomainEvent(INotification eventItem)
         {
-            _domainEvents ??= new List<INotification>();
             _domainEvents.Add(eventItem);
         }
 
